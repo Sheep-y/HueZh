@@ -16,7 +16,7 @@ namespace HueZh {
 
       protected override string GetAppDataDir () {
          var path = Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments );
-         return string.IsNullOrEmpty( path ) ? null : Path.Combine( Path.Combine( path, "My Games" ), "Joyful Hant" );
+         return string.IsNullOrEmpty( path ) ? null : Path.Combine( Path.Combine( path, "My Games" ), Path.Combine( "Curve Digital", "Hue" ) );
       }
 
       protected override void OnGameAssemblyLoaded ( Assembly _ ) => new HuePatcher().Apply();
@@ -59,7 +59,7 @@ namespace HueZh {
             ___languages.Add( "english", 0 );
             ___languages.Add( "chinese", 0 );
          } else
-            Warn( "Unexpected game language list: {0}", string.Join( ", ", ___languages.OrderBy( e => e.Value ).Select( e => $"{e.Value}:{e.Key}" ) ) );
+            Warn( "Unexpected game language list: {0}", string.Join( ", ", ___languages.OrderBy( e => e.Value ).Select( e => $"{e.Value}:{e.Key}" ).ToArray() ) );
 
       } catch ( FileNotFoundException ex ) {
          Error( "Not Found: {0}", TextPath );

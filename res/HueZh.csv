@@ -1,8 +1,8 @@
 Column,english,chinese
 ControlRec,Controller Recommended,建議使用遊戲控制器遊玩
 AnyKey,Press any key to start,按任意鍵開始遊戲
-Paused,PAUSED,暫停
-Resume,RESUME,恢復
+Paused,PAUSED,主選單
+Resume,RESUME,回到遊戲
 Restart,RESTART LEVEL,重玩本關
 StartNew,START NEW GAME,開始新遊戲
 NewGame,NEW GAME,新遊戲
@@ -109,232 +109,232 @@ CreditCurvePublicRelations,Public Relations,
 TutorialHold,Hold,長按此鍵
 TutorialToPull,To Pull,拉
 GoBack,Go Back?,返回？
-LighthouseKeeperIntroA0,The fishermen caught a glimpse of something...,漁夫們
-LighthouseKeeperIntroA1,...something unusual.,
-LighthouseKeeperIntroA2,Down past the lighthouse.,
-LighthouseKeeperIntroB0,Your mother has gone?,
-LighthouseKeeperIntroB1,Oh I'm sure she'll be back,
-LighthouseKeeperIntroB2,I haven't seen her myself I'm afraid.,
-LighthouseKeeperIntroC0,What a miserable day!,
-LighthouseKeeperIntroC1,The lighthouse is on the blink as well!,
-LighthouseKeeperIntroC2,No boats can can come inshore...,
-LighthouseKeeperIntroC3,...until it's working again.,
-LighthouseKeeperIntroC4,What a bother!,
-LighthouseKeeperAquaA0,"Wow, the skies have cleared...",
-LighthouseKeeperAquaA1,...what a beautiful day.,
-LighthouseKeeperAquaB0,Now if only I could figure out...,
-LighthouseKeeperAquaB1,...What is wrong with the lighthouse...,
-LighthouseKeeperAquaB2,Then the fishermen would know where to come!,
-LighthouseKeeperAquaC0,We used to turn on the power in the basement...,
-LighthouseKeeperAquaC1,...but the entrance has long been blocked.,
-LighthouseKeeperAquaC2,"There is another secret entrance, but...",
-LighthouseKeeperAquaC3,...that comes out a long way from here.,
-LighthouseKeeperLighthouseOn0,The light has come on!,
-LighthouseKeeperLighthouseOn1,Finally the boats can come in to harbor.,
-LighthouseKeeperLighthouseOnOutsideA0,"Hey Hue, it was you?",
-LighthouseKeeperLighthouseOnOutsideA1,You turned the power back on?,
-LighthouseKeeperLighthouseOnOutsideA2,Well I'll be. Thank you!,
-LighthouseKeeperLighthouseOnOutsideA3,The fishermen are back now...,
-LighthouseKeeperLighthouseOnOutsideA4,...they got quite lost I believe!,
-LighthouseKeeperLighthouseOnOutsideB0,Now the lighthouse is working...,
-LighthouseKeeperLighthouseOnOutsideB1,...boats can come and go again!,
-LighthouseKeeperLighthouseOnOutsideB2,If you need a ride anywhere...,
-LighthouseKeeperLighthouseOnOutsideB3,I'm sure the fishermen will oblige!,
-LighthouseKeeperLighthouseOnOutsideC0,You'd think keeping a lighthouse would be easy...,
-LighthouseKeeperLighthouseOnOutsideC1,But with the power going out...,
-LighthouseKeeperLighthouseOnOutsideC2,...and the basement getting blocked...,
-LighthouseKeeperLighthouseOnOutsideC3,...well... it's been quite stressful!,
-LighthouseKeeperLighthouseOnOutsideC4,"I need a nice cup of tea, and a snooze.",
-LighthouseKeeperCompleteA0,"Your mother is back, Hue!",
-LighthouseKeeperCompleteA1,Wonderful!,
-LighthouseKeeperCompleteA2,What a relief it must be.,
-LighthouseKeeperCompleteB0,My mother left long ago.,
-LighthouseKeeperCompleteB1,I'm so pleased you were able to find yours.,
-LighthouseKeeperCompleteB2,"Make sure you make the most of it, Hue.",
-LighthouseKeeperCompleteC0,"First, the lighthouse, now your mother...",
-LighthouseKeeperCompleteC1,...what a remarkable day!,
-LighthouseKeeperCompleteC2,I hope this spell of good luck continues!,
-MinerIntroA0,Hellooooo?,
-MinerIntroA1,Hue is that you?,
-MinerIntroA2,"Thank goodness, I've been trapped for days!",
-MinerIntroA3,Help me get out of here!,
-MinerIntroA4,I keep hearing noises! It's creeping me out!,
-MinerAquaA0,The rocks... they...,
-MinerAquaA1,they... just disappeared?,
-MinerAquaA2,I don't know how you did it?,
-MinerAquaA3,Who cares! I'm saved!,
-MinerAquaA4,Thank you!,
-MinerHomeA0,"Oh, hey again Hue!",
-MinerHomeA1,Thanks so much for saving me earlier!,
-MinerHomeA2,Those caves sure gave me the creeps.,
-MinerHomeB0,I don't know how much longer I would have lasted...,
-MinerHomeB1,...the rocks had trapped me in!,
-MinerHomeB2,What a pickle!,
-MinerHomeC0,"How did you do it though, Hue?",
-MinerHomeC1,You made the rocks... just vanish.,
-MinerHomeC2,Was it magic... witchcraft?,
-MinerHomeD0,Perhaps you can make my bills disappear too...,
-MinerHomeD1,...wouldn't that be something!,
-MinerCompleteA0,Hey Hue! You saved your mother too?,
-MinerCompleteA1,Or did she save you?,
-MinerCompleteA2,It must be your new...,
-MinerCompleteA3,"...mysterious powers, woOOoo.",
-MinerCompleteB0,I told your mother about how you saved me...,
-MinerCompleteB1,she was so proud!,
-MinerCompleteB2,"Rightfully so, I owe you a beer...",
-MinerCompleteB3,...I mean a juice!,
-MinerCompleteC0,I'm hanging up my mining boots for good!,
-MinerCompleteC1,I never found anything anyway...,
-MinerCompleteC2,...I might look for shells on the beach instead.,
-WaterLadyA0,Oh hello there!,
-WaterLadyA1,You startled me...,
-WaterLadyA2,I'm just resting my legs...,
-WaterLadyA3,Don't play too close to the water now!,
-WaterLadyB0,I've heard there are caves through the waterfall...,
-WaterLadyB1,...apparently they stretch for miles.,
-WaterLadyB2,I would never go myself though.,
-WaterLadyB3,It's far too dangerous!,
-WaterLadyC0,I come down here to collect water sometimes...,
-WaterLadyC1,...it's much nicer than from the well.,
-WaterLadyC2,Isn't the sound of water relaxing?,
-WaterLadyC3,I could just sit here and listen all day.,
-WaterLadyHomeA0,Hello again Hue.,
-WaterLadyHomeA1,Great to see you and your mother are safe!,
-WaterLadyHomeA2,Hopefully we'll cross paths...,
-WaterLadyHomeA3,...maybe we can visit that waterfall again.,
-WaterLadyHomeB0,"I had no idea when we last met, down by the waterfall...",
-WaterLadyHomeB1,...that you were going on such an adventure!,
-WaterLadyHomeB2,How exciting!,
-WaterLadyHomeC0,"I would offer you a drink, but it's my last bottle!",
-WaterLadyHomeC1,I need to take another trip to the waterfall.,
-WaterLadyHomeC2,Maybe another day... today has been so busy!,
-Skeleton1A0,Hey watch it buddy!,
-Skeleton1B0,Stop that!,
-Skeleton1C0,How could you be so heartless!,
-Skeleton2A0,Skeletons hanging over here!,
-Skeleton2B0,Quit it!,
-Skeleton2C0,I'd come down there...,
-Skeleton2C1,...but I don't have the guts!,
-Skeleton3A0,You're not getting under my skin!,
-Skeleton3B0,You're making me queasy...,
-Skeleton3B1,I don't have the stomach for it.,
-JanitorA0,"Oh hey, you!",
-JanitorA1,You're not supposed to be here!,
-JanitorA2,The University is closed...,
-JanitorA3,"The pipes have burst, there's slime everywhere!",
-JanitorA4,Best be on your way.,
-JanitorB0,I won't say it again!,
-JanitorB1,The University is closed!,
-JanitorB2,Away with you!,
-JanitorC0,Aren't you a bit young to be at University anyway?,
-JanitorC1,I must be getting old.,
-JanitorC2,"Now get out of here, before I lose my patience!",
-JanitorD0,"Come on kid, I'm trying to mop up here.",
-JanitorD1,"Don't cause a scene, I'm just doing my job.",
-JanitorD2,Now scram!,
-JanitorE0,"Okay, if you're going to hassle me, how about a joke?",
-JanitorE1,What did the janitor say when he jumped out the closet?,
-JanitorE2,Supplies!,
-JanitorE3,Huehuehue...,
-JanitorE4,Now scoot!,
-FishermanVillageA0,Hey little landlubber!,
-FishermanVillageA1,I'm just dropping off the catch.,
-FishermanVillageA2,You need to get to the University?...,
-FishermanVillageA3,...I'm setting sail shortly!,
-FishermanVillageA4,Hop inside and I'll give you a ride!,
-FishermanVillageB0,Not long until we set sail!,
-FishermanVillageB1,Thank goodness the lighthouse is working now...,
-FishermanVillageB2,...I was sailing around in circles!,
-FishermanVillageB3,We'll raise anchor when you're ready!,
-FishermanVillageC0,Nice day for a spot of sailing!,
-FishermanVillageC1,Step inside and we'll hit the seas!,
-FishermanMountainsA0,"Phew, that was a rough ride!",
-FishermanMountainsA1,Looks like you found your sea legs though.,
-FishermanMountainsA2,The University is up in the mountains...,
-FishermanMountainsA3,"There should be a cable car, at the base of the mountain.",
-FishermanMountainsA4,Otherwise you'll have a rocky climb!,
-FishermanMountainsB0,"If you head East, you should see a sign for the University.",
-FishermanMountainsB1,It shouldn't take you long to get there.,
-FishermanMountainsB2,"I'll be here a while, so take your time.",
-FishermanMountainsC0,It's a bit chilly isn't it?,
-FishermanMountainsC1,I need to get a better coat.,
-FishermanMountainsC2,Those seals have the right idea.,
-FishermanMountainsC3,Eat enough fish to get nice and fat.,
-FishermanMountainsC4,They look pretty warm under all that blubber.,
-FishermanMountainsD0,Did you hear about the red ship that collided with the blue ship?,
-FishermanMountainsD1,All the sailors were marooned!,
-FishermanCompleteA0,Well I'll be... look who it is!,
-FishermanCompleteA1,It's wonderful to see you both again!,
-FishermanCompleteA2,I never doubted you'd find each other.,
-FishermanCompleteA3,You both look exhausted... let me fire up the 'ol vessel.,
-FishermanCompleteA4,I'll get you back to the village in no time.,
-FishermanCompleteVillageA0,Hey little landlubber!,
-FishermanCompleteVillageA1,It's so great to see you two reunited.,
-FishermanCompleteVillageA2,You both slept the whole way back.,
-FishermanCompleteVillageA3,You must have been so tired!,
-FishermanCompleteVillageB0,I can take you back to the University...,
-FishermanCompleteVillageB1,...did you leave something behind?,
-FishermanCompleteVillageB2,I'm ready when you are!,
-FishermanCompleteVillageC0,"It's a clear sky, perfect for a quick sail!",
-FishermanCompleteVillageC1,Feel free to jump aboard.,
-FishermanCompleteVillageC2,I need someone to scrub the deck!,
-MumCompleteA0,Good morning Hue!,
-MumCompleteA1,Isn't it great to be home...,
-MumCompleteA2,...everything is back the way it should be.,
-MumCompleteB0,When we arrived...,
-MumCompleteB1,...everyone was so pleased to see us!,
-MumCompleteB2,"I suppose, I kind of took our friends for granted...",
-MumCompleteB3,...I was too caught up in my research.,
-MumCompleteC0,I think my researching days are over...,
-MumCompleteC1,"...or at least, I'm going to take a hiatus.",
-MumCompleteC2,Never say never...,
-MumCompleteC3,...even after everything we've been through!,
-RepairmanA0,"Wow, you're a long way from home, kid!",
-RepairmanA1,What are you doing all the way down here?,
-RepairmanA2,I've just got this generator working.,
-RepairmanA3,The lights have turned on!,
-RepairmanB0,I read stories about an ancient civilisation...,
-RepairmanB1,"...building great machines, many years ago.",
-RepairmanB2,I came down here to see for myself.,
-RepairmanB3,Quite incredible really!,
-RepairmanC0,There's so many wires...,
-RepairmanC1,...so much electricity!,
-RepairmanC2,Keep an eye out for lasers.,
-RepairmanC3,They're very dangerous!,
-RepairmanCompleteA0,"Hey kid, great to see you again!",
-RepairmanCompleteA1,Did you come across any more machines?,
-RepairmanCompleteA2,I turned back at the lasers...,
-RepairmanCompleteA3,I didn't want to get zapped!,
-RepairmanCompleteB0,Quite the adventure you've been on!,
-RepairmanCompleteB1,How you got through those lasers...,
-RepairmanCompleteB2,"...you're a brave one, I'll give you that!",
-RepairmanCompleteC0,We'll have to take a trip into the caves sometime...,
-RepairmanCompleteC1,I'd love to see how you got so far!,
-RepairmanCompleteC2,Not today though... I just got back!,
-RepairmanCompleteC3,What a crazy few days!,
-ShamanA0,H-h-h-heeeeey! Wheere d'ya think yeeer goin'?,
-ShamanA1,Whaaat?,
-ShamanA2,Who is that? Mmmhmmm.,
-ShamanB0,Y-y-y-yessss! Faaalling rocks! Deeeath!,
-ShamanB1,Go back! Back... back... back...,
-ShamanB2,Whoooo?,
-ShamanC0,N-n-n-noooo. Greeeaat ciiircles of air!,
-ShamanC1,Stretch to the sky! Ahhhh!,
-ShamanC2,Fly awaaay litttttle boy..,
-LumberjackA0,Hey there little traveler.,
-LumberjackA1,You look a long way from home...,
-LumberjackA2,...what are you doing in these woods all alone?,
-LumberjackA3,The cable car to the University is out of service.,
-LumberjackA4,The only way is up through the mountains.,
-LumberjackA5,"It's a dangerous climb, I wouldn't try it if I was you.",
-LumberjackB0,I'm just gathering some fire wood.,
-LumberjackB1,It gets cold at night in these mountains.,
-LumberjackB2,Make sure you stay warm!,
-LumberjackC0,I wonder what your business is at the University.,
-LumberjackC1,"In the colder months, I collect firewood for them.",
-LumberjackC2,"If you walk on past the entrance, I keep some wood in the rocks.",
-LumberjackC3,Someone keeps putting this shiny beaker in there.,
-LumberjackC4,Very strange.,
+LighthouseKeeperIntroA0,The fishermen caught a glimpse of something...,漁夫們瞥見了些甚麼……
+LighthouseKeeperIntroA1,...something unusual.,……有點兒耐人尋味……
+LighthouseKeeperIntroA2,Down past the lighthouse.,就在燈塔前方。
+LighthouseKeeperIntroB0,Your mother has gone?,你的媽媽沒有回來？
+LighthouseKeeperIntroB1,Oh I'm sure she'll be back,我相信她會回來的。
+LighthouseKeeperIntroB2,I haven't seen her myself I'm afraid.,很可惜我沒有見到她。
+LighthouseKeeperIntroC0,What a miserable day!,真是糟透的一天！
+LighthouseKeeperIntroC1,The lighthouse is on the blink as well!,燈塔壞了！
+LighthouseKeeperIntroC2,No boats can can come inshore...,船都靠不了岸……
+LighthouseKeeperIntroC3,...until it's working again.,……所以要修好它。
+LighthouseKeeperIntroC4,What a bother!,真麻煩！
+LighthouseKeeperAquaA0,"Wow, the skies have cleared...",嘩，蒼天突然放晴……
+LighthouseKeeperAquaA1,...what a beautiful day.,……真是美麗的一天。
+LighthouseKeeperAquaB0,Now if only I could figure out...,現在我只需要搞定……
+LighthouseKeeperAquaB1,...What is wrong with the lighthouse...,……這座爛燈塔……
+LighthouseKeeperAquaB2,Then the fishermen would know where to come!,漁夫們就能找到方向！
+LighthouseKeeperAquaC0,We used to turn on the power in the basement...,以前我們只需要去地庫打開開關……
+LighthouseKeeperAquaC1,...but the entrance has long been blocked.,……但現在入口被封死了。
+LighthouseKeeperAquaC2,"There is another secret entrance, but...",是有另一個秘密入口，只不過……
+LighthouseKeeperAquaC3,...that comes out a long way from here.,……距離這兒很遠。
+LighthouseKeeperLighthouseOn0,The light has come on!,燈亮了！
+LighthouseKeeperLighthouseOn1,Finally the boats can come in to harbor.,漁船終於能進港了。
+LighthouseKeeperLighthouseOnOutsideA0,"Hey Hue, it was you?",是你嗎，瑟調？
+LighthouseKeeperLighthouseOnOutsideA1,You turned the power back on?,是你打開開關的？
+LighthouseKeeperLighthouseOnOutsideA2,Well I'll be. Thank you!,原來如此。謝謝！
+LighthouseKeeperLighthouseOnOutsideA3,The fishermen are back now...,漁夫們回來了……
+LighthouseKeeperLighthouseOnOutsideA4,...they got quite lost I believe!,……我肯定他們之前完全迷失方向！
+LighthouseKeeperLighthouseOnOutsideB0,Now the lighthouse is working...,現在燈塔運作正常……
+LighthouseKeeperLighthouseOnOutsideB1,...boats can come and go again!,……船隻自由進出、通行無阻！
+LighthouseKeeperLighthouseOnOutsideB2,If you need a ride anywhere...,如果你需要出海……
+LighthouseKeeperLighthouseOnOutsideB3,I'm sure the fishermen will oblige!,我肯定漁夫們會幫你一把！
+LighthouseKeeperLighthouseOnOutsideC0,You'd think keeping a lighthouse would be easy...,大家都以為管理燈塔是分好差事……
+LighthouseKeeperLighthouseOnOutsideC1,But with the power going out...,但是燈熄滅了……
+LighthouseKeeperLighthouseOnOutsideC2,...and the basement getting blocked...,……地庫又進不去……
+LighthouseKeeperLighthouseOnOutsideC3,...well... it's been quite stressful!,……總之……我積了很大壓力！
+LighthouseKeeperLighthouseOnOutsideC4,"I need a nice cup of tea, and a snooze.",我需要喝一杯茶，然後小睡片刻。
+LighthouseKeeperCompleteA0,"Your mother is back, Hue!",瑟調，你的媽媽回來了？
+LighthouseKeeperCompleteA1,Wonderful!,太好了！
+LighthouseKeeperCompleteA2,What a relief it must be.,很高興你能放下心頭大石。
+LighthouseKeeperCompleteB0,My mother left long ago.,我的媽媽過身很久了。
+LighthouseKeeperCompleteB1,I'm so pleased you were able to find yours.,你能找回媽媽，我為你感到高興。
+LighthouseKeeperCompleteB2,"Make sure you make the most of it, Hue.",要好好珍惜這次重逢，瑟調。
+LighthouseKeeperCompleteC0,"First, the lighthouse, now your mother...",先是攞平燈塔，然後找回媽媽……
+LighthouseKeeperCompleteC1,...what a remarkable day!,……真是奇妙的一天！
+LighthouseKeeperCompleteC2,I hope this spell of good luck continues!,希望這個好運氣會持續下去！
+MinerIntroA0,Hellooooo?,哈囉～～～？
+MinerIntroA1,Hue is that you?,是瑟調嗎？
+MinerIntroA2,"Thank goodness, I've been trapped for days!",謝天謝地，我在這兒困了數天！
+MinerIntroA3,Help me get out of here!,幫幫忙救我出去！
+MinerIntroA4,I keep hearing noises! It's creeping me out!,我一直聽到聲音，快要發瘋了！
+MinerAquaA0,The rocks... they...,那些岩石……它們……
+MinerAquaA1,they... just disappeared?,它們……就那樣消失了？
+MinerAquaA2,I don't know how you did it?,我不知你是怎樣做到的。
+MinerAquaA3,Who cares! I'm saved!,但誰管它？我得救了！
+MinerAquaA4,Thank you!,謝謝！
+MinerHomeA0,"Oh, hey again Hue!",噢，瑟調，我們又見面了！
+MinerHomeA1,Thanks so much for saving me earlier!,謝謝你救出我！
+MinerHomeA2,Those caves sure gave me the creeps.,那洞穴真的令我嚇破了膽。
+MinerHomeB0,I don't know how much longer I would have lasted...,真不知道當時還能撐多久。
+MinerHomeB1,...the rocks had trapped me in!,……那些岩石攔住了路！
+MinerHomeB2,What a pickle!,進退維谷！
+MinerHomeC0,"How did you do it though, Hue?",那你是如何做到的，瑟調？
+MinerHomeC1,You made the rocks... just vanish.,我指，你就那樣……變走了岩石。
+MinerHomeC2,Was it magic... witchcraft?,是魔法嗎……難道是巫術？
+MinerHomeD0,Perhaps you can make my bills disappear too...,如果你能變走我的付款單……
+MinerHomeD1,...wouldn't that be something!,……那就巧同造化了！
+MinerCompleteA0,Hey Hue! You saved your mother too?,嘿，瑟調！你今次救出了媽媽？
+MinerCompleteA1,Or did she save you?,還是媽媽救了你？
+MinerCompleteA2,It must be your new...,這一定是你的……
+MinerCompleteA3,"...mysterious powers, woOOoo.",……神奇能力之一，嘩。
+MinerCompleteB0,I told your mother about how you saved me...,我告訴了你的媽媽，說你如何救出我。
+MinerCompleteB1,she was so proud!,她為你感到驕傲！
+MinerCompleteB2,"Rightfully so, I owe you a beer...",所以，讓我請你喝一杯……
+MinerCompleteB3,...I mean a juice!,……呃，一杯果汁？
+MinerCompleteC0,I'm hanging up my mining boots for good!,我掛靴了。再也不掘礦了。
+MinerCompleteC1,I never found anything anyway...,反正我從沒掘到些甚麼……
+MinerCompleteC2,...I might look for shells on the beach instead.,……也許我可以去岸邊拾貝殼。
+WaterLadyA0,Oh hello there!,噢，你好！
+WaterLadyA1,You startled me...,我沒注意到你……
+WaterLadyA2,I'm just resting my legs...,我走累了，正在休息。
+WaterLadyA3,Don't play too close to the water now!,要小心別掉進水！
+WaterLadyB0,I've heard there are caves through the waterfall...,我聽說過，瀑布後面有洞穴……
+WaterLadyB1,...apparently they stretch for miles.,……一個又一個洞穴，連綿不斷、沒有盡頭。
+WaterLadyB2,I would never go myself though.,不過我不去探險。
+WaterLadyB3,It's far too dangerous!,因為太危險了！
+WaterLadyC0,I come down here to collect water sometimes...,我有時會來這兒打水……
+WaterLadyC1,...it's much nicer than from the well.,……比井邊打水寫意多了。
+WaterLadyC2,Isn't the sound of water relaxing?,聽到這柔和的水聲嗎？
+WaterLadyC3,I could just sit here and listen all day.,我可以坐在這兒聽一整天。
+WaterLadyHomeA0,Hello again Hue.,你好，瑟調。
+WaterLadyHomeA1,Great to see you and your mother are safe!,很高興你跟你的媽媽平安再會！
+WaterLadyHomeA2,Hopefully we'll cross paths...,說不定我們也會再次巧遇……
+WaterLadyHomeA3,...maybe we can visit that waterfall again.,……那瀑布是個好地方，不是嗎？
+WaterLadyHomeB0,"I had no idea when we last met, down by the waterfall...",上次在瀑布邊遇見你時，我完全沒想過……
+WaterLadyHomeB1,...that you were going on such an adventure!,……原來你正在大冒險！
+WaterLadyHomeB2,How exciting!,太棒了！
+WaterLadyHomeC0,"I would offer you a drink, but it's my last bottle!",我想請你喝一杯茶，但我的水不夠了。
+WaterLadyHomeC1,I need to take another trip to the waterfall.,要去瀑布一趟。
+WaterLadyHomeC2,Maybe another day... today has been so busy!,改天吧……今天太忙了！
+Skeleton1A0,Hey watch it buddy!,喂，你撞到我了！
+Skeleton1B0,Stop that!,停！
+Skeleton1C0,How could you be so heartless!,你真沒心沒肺！
+Skeleton2A0,Skeletons hanging over here!,本骨懸若日月，不會動搖！
+Skeleton2B0,Quit it!,夠了沒！
+Skeleton2C0,I'd come down there...,我想下來的……
+Skeleton2C1,...but I don't have the guts!,……但我沒那個膽！
+Skeleton3A0,You're not getting under my skin!,撏毛搗鬢對我不管用！
+Skeleton3B0,You're making me queasy...,你令我倒胃……
+Skeleton3B1,I don't have the stomach for it.,只可惜我沒有胃。
+JanitorA0,"Oh hey, you!",喂，你！
+JanitorA1,You're not supposed to be here!,這兒不准進入！
+JanitorA2,The University is closed...,大學目前已關閉……
+JanitorA3,"The pipes have burst, there's slime everywhere!",水管爆裂了，到處都是污水！
+JanitorA4,Best be on your way.,走吧，這是為你好。
+JanitorB0,I won't say it again!,我不會再重覆！
+JanitorB1,The University is closed!,大學已經關閉！
+JanitorB2,Away with you!,快點走！
+JanitorC0,Aren't you a bit young to be at University anyway?,況且大學本來就不是豆丁來的地方吧？
+JanitorC1,I must be getting old.,還是是我老了。
+JanitorC2,"Now get out of here, before I lose my patience!",好了快點出去，別要我發脾氣！
+JanitorD0,"Come on kid, I'm trying to mop up here.",求求你了小豆丁，我只是個清潔工。
+JanitorD1,"Don't cause a scene, I'm just doing my job.",別令我難做好嗎，我只是打工的。
+JanitorD2,Now scram!,走！走！
+JanitorE0,"Okay, if you're going to hassle me, how about a joke?",好，既然你堅持不走，那就聽我說一個笑話吧？
+JanitorE1,What did the janitor say when he jumped out the closet?,大學生首天上班，要負責清潔。他說，我是名大學生！
+JanitorE2,Supplies!,清潔工聽了說，抱歉原來你是大學生。讓我教你掃地。
+JanitorE3,Huehuehue...,嘻嘻嘻……
+JanitorE4,Now scoot!,聽完快滾！
+FishermanVillageA0,Hey little landlubber!,嗨，岸居的小孩你好！
+FishermanVillageA1,I'm just dropping off the catch.,我正在卸貨。
+FishermanVillageA2,You need to get to the University?...,你說你要去大學？唔……
+FishermanVillageA3,...I'm setting sail shortly!,……我過不久就會出海！
+FishermanVillageA4,Hop inside and I'll give you a ride!,上船吧，我載你一程！
+FishermanVillageB0,Not long until we set sail!,過不久就會起錨。
+FishermanVillageB1,Thank goodness the lighthouse is working now...,燈塔沒事實在是太好了……
+FishermanVillageB2,...I was sailing around in circles!,……我之前一直都在打轉！
+FishermanVillageB3,We'll raise anchor when you're ready!,等你準備好我們就出發！
+FishermanVillageC0,Nice day for a spot of sailing!,今天是適宜出海的好天！
+FishermanVillageC1,Step inside and we'll hit the seas!,進來一起乘風破浪吧！
+FishermanMountainsA0,"Phew, that was a rough ride!",呼，風浪不算小。
+FishermanMountainsA1,Looks like you found your sea legs though.,不過你看上去沒暈船。
+FishermanMountainsA2,The University is up in the mountains...,大學就在山上……
+FishermanMountainsA3,"There should be a cable car, at the base of the mountain.",山腳那邊應該有䌫車。
+FishermanMountainsA4,Otherwise you'll have a rocky climb!,不然就只能攀岩登山了！
+FishermanMountainsB0,"If you head East, you should see a sign for the University.",往東走，就會看見大學的路牌。
+FishermanMountainsB1,It shouldn't take you long to get there.,應該不用走很遠。
+FishermanMountainsB2,"I'll be here a while, so take your time.",我會逗留一段時間，你可以慢慢來。
+FishermanMountainsC0,It's a bit chilly isn't it?,有點冷，對嗎？
+FishermanMountainsC1,I need to get a better coat.,我要一件更好的大衣。
+FishermanMountainsC2,Those seals have the right idea.,那些海豹很聰明。
+FishermanMountainsC3,Eat enough fish to get nice and fat.,天天吃魚吃得又圓又胖。
+FishermanMountainsC4,They look pretty warm under all that blubber.,被那麼多脂肪包著一定很暖。
+FishermanMountainsD0,Did you hear about the red ship that collided with the blue ship?,聽說紅船跟藍船撞在一起了……
+FishermanMountainsD1,All the sailors were marooned!,全部船員都漂流到了不知那兒！
+FishermanCompleteA0,Well I'll be... look who it is!,時候也不早了……呀，看誰來了！
+FishermanCompleteA1,It's wonderful to see you both again!,見到你們真好！
+FishermanCompleteA2,I never doubted you'd find each other.,我沒有懷疑過你們能不能重逢。
+FishermanCompleteA3,You both look exhausted... let me fire up the 'ol vessel.,你們看上去都累了……讓我發動引擎。
+FishermanCompleteA4,I'll get you back to the village in no time.,眨眼的功夫就能帶你們回去。
+FishermanCompleteVillageA0,Hey little landlubber!,嗨，岸居的小孩你好！
+FishermanCompleteVillageA1,It's so great to see you two reunited.,看見你們就感到溫馨。
+FishermanCompleteVillageA2,You both slept the whole way back.,你們從上船睡到下船。
+FishermanCompleteVillageA3,You must have been so tired!,一定是累壞了！
+FishermanCompleteVillageB0,I can take you back to the University...,去大學？完全沒問題！
+FishermanCompleteVillageB1,...did you leave something behind?,是遺下了些甚麼嗎？
+FishermanCompleteVillageB2,I'm ready when you are!,隨時可以出發！
+FishermanCompleteVillageC0,"It's a clear sky, perfect for a quick sail!",萬里無雲，最適合出海不過！
+FishermanCompleteVillageC1,Feel free to jump aboard.,你可以隨時上船。
+FishermanCompleteVillageC2,I need someone to scrub the deck!,甲板需要有人去擦！
+MumCompleteA0,Good morning Hue!,早安，瑟調！
+MumCompleteA1,Isn't it great to be home...,回到家真好……
+MumCompleteA2,...everything is back the way it should be.,……一切都歸回原位。
+MumCompleteB0,When we arrived...,我們剛回來時……
+MumCompleteB1,...everyone was so pleased to see us!,……大家都歡天喜地！
+MumCompleteB2,"I suppose, I kind of took our friends for granted...",我想，我忽略了我們的朋友……
+MumCompleteB3,...I was too caught up in my research.,……太埋首於研究了。
+MumCompleteC0,I think my researching days are over...,我不會再研究了……
+MumCompleteC1,"...or at least, I'm going to take a hiatus.",……起碼，暫時不會再研究。
+MumCompleteC2,Never say never...,永不說永不……
+MumCompleteC3,...even after everything we've been through!,……即使今次真的很驚險！
+RepairmanA0,"Wow, you're a long way from home, kid!",嘩，孩子，你怎麼會在這兒？
+RepairmanA1,What are you doing all the way down here?,山長水遠的，你走來幹甚麼？
+RepairmanA2,I've just got this generator working.,我剛修好這發電機。
+RepairmanA3,The lights have turned on!,看，燈亮了！
+RepairmanB0,I read stories about an ancient civilisation...,我讀過一本書說有個遠古文明……
+RepairmanB1,"...building great machines, many years ago.",……在很久以前做了很多偉大的機器。
+RepairmanB2,I came down here to see for myself.,我是來親眼看看的。
+RepairmanB3,Quite incredible really!,果然很神奇！
+RepairmanC0,There's so many wires...,很多很多電線……
+RepairmanC1,...so much electricity!,……很多很多電力！
+RepairmanC2,Keep an eye out for lasers.,要小心激光。
+RepairmanC3,They're very dangerous!,它們很危險！
+RepairmanCompleteA0,"Hey kid, great to see you again!",唷，孩子，我們又見面了！
+RepairmanCompleteA1,Did you come across any more machines?,有找到更多機器嗎？
+RepairmanCompleteA2,I turned back at the lasers...,我見到激光就走回頭了。
+RepairmanCompleteA3,I didn't want to get zapped!,我不想被燒焦！
+RepairmanCompleteB0,Quite the adventure you've been on!,原來你經歷了一場大冒險？！
+RepairmanCompleteB1,How you got through those lasers...,那些激光居然能避開嗎……
+RepairmanCompleteB2,"...you're a brave one, I'll give you that!",……你很勇敢，這點不會錯！
+RepairmanCompleteC0,We'll have to take a trip into the caves sometime...,我們該找天再去洞穴一趟……
+RepairmanCompleteC1,I'd love to see how you got so far!,我想看看你是如何走過去的！
+RepairmanCompleteC2,Not today though... I just got back!,不過今天就免了……我才剛剛回來！
+RepairmanCompleteC3,What a crazy few days!,這幾天真瘋狂！
+ShamanA0,H-h-h-heeeeey! Wheere d'ya think yeeer goin'?,哈嘿嘿嘿！尼咿為尼在去拿兒？
+ShamanA1,Whaaat?,甚甚甚麼？
+ShamanA2,Who is that? Mmmhmmm.,拿是誰？唔嗯。
+ShamanB0,Y-y-y-yessss! Faaalling rocks! Deeeath!,耶耶耶～～耶！絡絡絡石！死死！
+ShamanB1,Go back! Back... back... back...,回去！回……回……回……
+ShamanB2,Whoooo?,誰誰誰？
+ShamanC0,N-n-n-noooo. Greeeaat ciiircles of air!,不不不。大大大圓圓圓圈圈圈！
+ShamanC1,Stretch to the sky! Ahhhh!,滿天滿地！啊啊！
+ShamanC2,Fly awaaay litttttle boy..,飛飛飛吧孩孩孩孩子……
+LumberjackA0,Hey there little traveler.,嗨，小旅人。
+LumberjackA1,You look a long way from home...,你好像離家很遠……
+LumberjackA2,...what are you doing in these woods all alone?,……你一個人在森林裡幹些甚麼呢？
+LumberjackA3,The cable car to the University is out of service.,上大學的纜車停運了。
+LumberjackA4,The only way is up through the mountains.,要上去只能翻山越嶺。
+LumberjackA5,"It's a dangerous climb, I wouldn't try it if I was you.",很危險。我勸你還是回去吧。
+LumberjackB0,I'm just gathering some fire wood.,我？我在斬柴。
+LumberjackB1,It gets cold at night in these mountains.,山裡入夜後很冷，需要柴火。
+LumberjackB2,Make sure you stay warm!,你也別著涼了！
+LumberjackC0,I wonder what your business is at the University.,你為甚麼要去大學？
+LumberjackC1,"In the colder months, I collect firewood for them.",冬天的時候他們會找我斬柴。
+LumberjackC2,"If you walk on past the entrance, I keep some wood in the rocks.",我存了一些柴，在大門裡面的大石那邊。
+LumberjackC3,Someone keeps putting this shiny beaker in there.,有人堅持不停將這個燒杯放在這兒。
+LumberjackC4,Very strange.,真奇怪。
 VO/Intro0,"Dearest Hue,",
 VO/Intro1,"Oh, I've had the most dreadful luck.",
 VO/Intro2,I feel terrible that you've been left alone all this time.,

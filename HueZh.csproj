@@ -73,10 +73,27 @@
   <ItemGroup>
     <Compile Include="HueZh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="ZyMod.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="res\HueZh.csv" />
+    <None Include="res\HueZh.csv.gz" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>del "$(ProjectDir)res\HueZh.csv.gz"
+"C:\Program Files\7-Zip\7z.exe" a -mx9 "$(ProjectDir)res\HueZh.csv.gz" "$(ProjectDir)res\HueZh.csv"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

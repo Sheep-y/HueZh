@@ -45,53 +45,50 @@ namespace HueZh {
 
       private static void OverrideLanguage ( string[] lines, ref int languageID, ref string ___selectedLanguage, Dictionary< string, int > ___languages ) { try {
          if ( lines == null || lines.Length <= 1 ) return;
+         if ( ___selectedLanguage == "chinese" ) { Info( "Game language is already chinese, index {0}.", languageID ); return; }
          Info( "Original game language is {0}.  {1} lines found.", ___selectedLanguage, lines.Length );
          #if DEBUG
          File.WriteAllText( Path.Combine( RootMod.AppDataDir, "Orig.csv" ), string.Join( "\r\n", lines ) );
          #endif
 
-         var comma = new char[]{ ',' };
          var map = new Dictionary< string, string >();
-         foreach ( var line in ReadData().Split( new string[]{ "\r\n" }, StringSplitOptions.None ).Skip( 1 ) ) {
-            if ( line.Length == 0 ) continue;
-            var cells = line.Split( comma, 2, StringSplitOptions.None );
-            if ( cells.Length <= 1 || cells[ 0 ].Length == 0 ) continue;
+         var blank = new HashSet< string >();
+         var buffer = new StringBuilder();
+         var r = new StringReader( ReadData() );
+         while ( r.TryReadCsvRow( out var line, buffer ) ) {
+            var cells = line.ToArray();
+            if ( cells.Length < 3 || cells[ 0 ].Length == 0 || ( cells[ 0 ] == "Column" && cells[ 1 ] == "english" ) ) continue;
+            if ( cells[ 2 ].Length == 0 ) { blank.Add( cells[ 0 ] ); continue; }
             Fine( "Loaded {0}", cells[ 0 ] );
-            Debug.Assert( cells[ 0 ][ 0 ] != '"' );
-            map[ cells[ 0 ] ] = line;
+            map[ cells[ 0 ] ] = cells[ 2 ].Replace( '\r', ' ' ).Replace( '\n', ' ' );
          }
-         Info( "Chinese data loaded ({0} entries).", map.Count );
+         Info( "Chinese data loaded ({0} translated, {1} keep original).", map.Count, blank.Count );
          if ( map.Count <= 1 ) {
-            Error( "Too few entries.  Is the file using CRLF (RFC 4180)?  Aborting." );
+            Error( "Too few entries, something is wrong.  Aborting." );
             return;
          }
 
          for ( var i = lines.Length - 1 ; i >= 1 ; i-- ) {
-            var cells = lines[ i ].Split( comma, 2, StringSplitOptions.None );
+            var cells = new StringReader( lines[ i ] ).ReadCsvRow( buffer ).ToArray();
             if ( cells.Length <= 1 || cells[ 0 ].Length == 0 ) continue;
-            Debug.Assert( cells[0][0] != '"' );
-            if ( ! map.TryGetValue( cells[ 0 ], out var line ) ) {
+            var key = cells[ 0 ];
+            if ( ! map.TryGetValue( key, out var text ) ) {
                cells = new StringReader( lines[ i ] ).ReadCsvRow().ToArray();
-               Info( "Untranslated: {0} => {1}", cells[0], cells[1] );
-               line = new StringBuilder().AppendCsvLine( cells[ 0 ], cells[ 1 ], "" ).ToString();
-            } else
-               Fine( "Updating {0}", cells[ 0 ] );
-            var newLine = Regex.Split( line, LocalizedText.SPLIT_RE ).ToArray();
-            if ( newLine.Length >= 3 && ( newLine[ 2 ].Length > 0 || newLine[ 1 ].Length > 0 ) ) {
-               lines[ i ] = line;
-               if ( newLine.Length > 3 ) Warn( "Possibily malformed line: {0}", line );
-            } else
-               Error( "Invalid line: {0}", line );
+               if ( ! blank.Contains( key ) ) Info( "Untranslated: {0} => {1}", key, cells[ 1 ] );
+               text = cells[ 1 ].Length == 0 ? "?" : cells[ 1 ];
+            }
+            var line = new StringBuilder().AppendCsvLine( key, text ).ToString();
+            Fine( "Updating {0}", key );
+            lines[ i ] = line;
          }
 
          Info( "Chinese data injected.  Changing game language to chinese." );
-         languageID = 2;
+         languageID = 1;
          ___selectedLanguage = "chinese";
-         lines[0] = "Column,english,chinese";
+         lines[0] = "Column,english";
          if ( ___languages.TryGetValue( "english", out var pos ) && pos == 1 ) {
             ___languages.Clear();
-            ___languages.Add( "english", 1 );
-            ___languages.Add( "chinese", 2 );
+            ___languages.Add( "chinese", 1 );
          } else
             Warn( "Unexpected game language list; english not at col 1: {0}", string.Join( ", ", ___languages.OrderBy( e => e.Value ).Select( e => $"{e.Value}:{e.Key}" ).ToArray() ) );
       } catch ( Exception ex ) { Err( ex ); } }

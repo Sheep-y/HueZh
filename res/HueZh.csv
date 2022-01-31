@@ -110,9 +110,9 @@ TutorialHold,Hold,長按此鍵
 TutorialToPull,To Pull,拉
 GoBack,Go Back?,返回？
 LighthouseKeeperIntroA0,The fishermen caught a glimpse of something...,漁夫們瞥見了些甚麼……
-LighthouseKeeperIntroA1,...something unusual.,……有點兒耐人尋味……
-LighthouseKeeperIntroA2,Down past the lighthouse.,就在燈塔前方。
-LighthouseKeeperIntroB0,Your mother has gone?,你的媽媽沒有回來？
+LighthouseKeeperIntroA1,...something unusual.,……異常的東西……
+LighthouseKeeperIntroA2,Down past the lighthouse.,就在燈塔再過一點。
+LighthouseKeeperIntroB0,Your mother has gone?,你的媽媽失蹤了？
 LighthouseKeeperIntroB1,Oh I'm sure she'll be back,我相信她會回來的。
 LighthouseKeeperIntroB2,I haven't seen her myself I'm afraid.,很可惜我沒有見到她。
 LighthouseKeeperIntroC0,What a miserable day!,真是糟透的一天！
@@ -122,7 +122,7 @@ LighthouseKeeperIntroC3,...until it's working again.,……所以要修好它。
 LighthouseKeeperIntroC4,What a bother!,真麻煩！
 LighthouseKeeperAquaA0,"Wow, the skies have cleared...",嘩，蒼天突然放晴……
 LighthouseKeeperAquaA1,...what a beautiful day.,……真是美麗的一天。
-LighthouseKeeperAquaB0,Now if only I could figure out...,現在我只需要搞定……
+LighthouseKeeperAquaB0,Now if only I could figure out...,現在我只需要修好……
 LighthouseKeeperAquaB1,...What is wrong with the lighthouse...,……這座爛燈塔……
 LighthouseKeeperAquaB2,Then the fishermen would know where to come!,漁夫們就能找到方向！
 LighthouseKeeperAquaC0,We used to turn on the power in the basement...,以前我們只需要去地庫打開開關……
@@ -333,7 +333,7 @@ LumberjackB2,Make sure you stay warm!,你也別著涼了！
 LumberjackC0,I wonder what your business is at the University.,你為甚麼要去大學？
 LumberjackC1,"In the colder months, I collect firewood for them.",冬天的時候他們會找我斬柴。
 LumberjackC2,"If you walk on past the entrance, I keep some wood in the rocks.",我存了一些柴，在大門裡面的大石那邊。
-LumberjackC3,Someone keeps putting this shiny beaker in there.,有人堅持不停將這個燒杯放在這兒。
+LumberjackC3,Someone keeps putting this shiny beaker in there.,有人不停堅持將這個燒杯放在這兒。
 LumberjackC4,Very strange.,真奇怪。
 VO/Intro0,"Dearest Hue,",致親愛的色調，
 VO/Intro1,"Oh, I've had the most dreadful luck.",噢，我的運氣糟得不能再糟。

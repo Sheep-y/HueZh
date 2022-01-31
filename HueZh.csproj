@@ -100,25 +100,32 @@ rem "C:\Program Files\7-Zip\7z.exe" a -mx9 "$(ProjectDir)res\HueZh.csv.gz" "$(Pr
 set DeployDir=$(ProjectDir)deploy\
 
 mkdir "%25DeployDir%25"
-mkdir "%25DeployDir%25\src"
-mkdir "%25DeployDir%25\src\res"
-mkdir "%25DeployDir%25\src\Properties"
-del /q "%25DeployDir%25\*.*"
-del /q "%25DeployDir%25\src\*.*"
+mkdir "%25DeployDir%25HueZh"
+mkdir "%25DeployDir%25src"
+mkdir "%25DeployDir%25src\res"
+mkdir "%25DeployDir%25src\Properties"
 
-copy "$(TargetPath)" "%25DeployDir%25"
-copy "$(TargetDir)0Harmony.dll" "%25DeployDir%25"
-copy "$(TargetDir)Mono.Cecil.dll" "%25DeployDir%25"
-copy "$(TargetDir)MonoMod.RuntimeDetour.dll" "%25DeployDir%25"
-copy "$(TargetDir)MonoMod.Utils.dll" "%25DeployDir%25"
+del /q "%25DeployDir%25*.*"
+del /q "%25DeployDir%25src\*.*"
+del /q "%25DeployDir%25HueZh\*.*"
 
-copy "$(ProjectDir)LICENSE" "%25DeployDir%25src"
+copy "$(TargetPath)" "%25DeployDir%25HueZh"
+copy "$(TargetDir)0Harmony.dll" "%25DeployDir%25HueZh"
+copy "$(TargetDir)Mono.Cecil.dll" "%25DeployDir%25HueZh"
+copy "$(TargetDir)MonoMod.RuntimeDetour.dll" "%25DeployDir%25HueZh"
+copy "$(TargetDir)MonoMod.Utils.dll" "%25DeployDir%25HueZh"
+
 copy "%25ResDir%25HueZh.csv" "%25DeployDir%25src\res"
 copy "%25ResDir%25LICENSE.*" "%25DeployDir%25src\res"
+copy "$(ProjectDir)LICENSE" "%25DeployDir%25src"
+copy "$(ProjectDir)*.config" "%25DeployDir%25src"
 copy "$(ProjectDir)*.cs" "%25DeployDir%25src"
 copy "$(ProjectDir)*.csproj" "%25DeployDir%25src"
 copy "$(ProjectDir)*.resx" "%25DeployDir%25src"
+copy "$(ProjectDir)*.sln" "%25DeployDir%25src"
 copy "$(ProjectDir)Properties" "%25DeployDir%25src\Properties\"
+copy "%25ResDir%25*.dll" "%25DeployDir%25"
+copy "%25ResDir%25doorstop*.*" "%25DeployDir%25"
 
 "C:\Program Files\7-Zip\7z.exe" a -r -mx9 "%25DeployDir%25HueZh.7z" "%25DeployDir%25*.*"</PostBuildEvent>
   </PropertyGroup>

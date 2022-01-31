@@ -86,7 +86,7 @@ CreditCurveDevelopmentDirector,Development Director,
 CreditCurvePublishingDirector,Publishing Director,
 CreditCurveSeniorMarketingManagers,Senior Marketing Managers,
 CreditCurvePrCommunityManager,PR & Community Manager,
-CreditCurveJuniorPrCommunity,,
+CreditCurveJuniorPrCommunity,Junior PR & Community,RP et community junior,
 CreditCurveFinancialController,Financial Controller,
 CreditCurveFinanceDirector,Finance Director,
 CreditCurveChairman,Chairman,
@@ -448,15 +448,15 @@ VO/UniversityStart2,"Dr. Grey would look down from his lectern, and all his seri
 VO/UniversityStart3,"He would pick you up, walk over and return you to my arms with a smile.",他會將你抱起，走過來，笑著將你歸還我的懷抱。
 VO/UniversityStart4,"Love cannot be measured, Hue. Like colour, it exists inside of us. I buried it.",愛是無法測量的，色調。它在我們心內，如同色彩。我埋沒了它。
 VO/UniversityStart5,"I buried the love that I had, for my own ends. I hope, after all this, you will see my mistakes for what they are.",我自私地埋沒了我的愛。待一切完結時，我希望你能辨明我的錯。
-VO/UniversityStart6,"Yours lovingly, Mum.",愛你的，母親。
-VO/UniversityEnd0,"Dearest Hue, it has been too long. You have grown so much.",致親愛的色調，
-VO/UniversityEnd1,Your mother... I tried to warn her.,你的媽媽……我提醒過她了。
-VO/UniversityEnd2,I thought that exiling her from the University would protect her... would protect you...,我本以為逐去她就能夠保護她……能夠保護你……
-VO/UniversityEnd3,She did not understand that some people choose not to see.,她不明白，有些人會視而不見。
+VO/UniversityStart6,"Yours lovingly, Mum.",愛著你的 母親 上
+VO/UniversityEnd0,"Dearest Hue, it has been too long. You have grown so much.",親愛的色調，許久不見。你長大了許多。
+VO/UniversityEnd1,Your mother... I tried to warn her.,你的媽媽……我提醒過她，但她沒聽。
+VO/UniversityEnd2,I thought that exiling her from the University would protect her... would protect you...,我只好將她逐出，以為能夠保護她……能夠保護你……
+VO/UniversityEnd3,She did not understand that some people choose not to see.,她不明白，有些人會選擇視而不見。
 VO/UniversityEnd4,"I never stole the ring from her, Hue. I tried to destroy it... before it destroyed her.",我沒有偷她的環彩色戒。我只是試圖摧毀它……免得它摧毀你的媽媽。
-VO/UniversityEnd5,I now know she had it under control. She knew what she was doing.,我現在知道她當時已經充分掌握了戒指。她知道她在做甚麼。
-VO/UniversityEnd6,"My intervention shattered the ring, altering your mother's very fabric.",當我擊碎戒指時，也同時改變了你的媽媽的構成。
-VO/UniversityEnd7,"My only reprieve, is that you were able to follow in her footsteps... to experience her work first-hand.",我唯一的救贖就是，讓你追隨她的足跡……體驗她的成果。
+VO/UniversityEnd5,I now know she had it under control. She knew what she was doing.,我現在知道她當時已經充分掌握了戒指。她知道自己在做甚麼。
+VO/UniversityEnd6,"My intervention shattered the ring, altering your mother's very fabric.",當我擊碎戒指時，也同時改變了你的媽媽的根源。
+VO/UniversityEnd7,"My only reprieve, is that you were able to follow in her footsteps... to experience her work first-hand.",我的唯一救贖就是，讓你追隨她的足跡……體驗她的成果。
 VO/UniversityEnd8,"We do not see things as they are Hue, instead we see them as we are.",我們不是在看事物的真相，色調。我們是在看自己的。
 VO/UniversityEnd9,Your mother... she has been waiting for you. I expect she will be thrilled to see how far you've come.,你的媽媽……在等你。看見克服了重重困難的你，她應該會欣喜若狂。
 VO/PS0,"P.S. You cannot always control what happens to you, but you can choose how you see it.",又及，雖然你無法拒絕發生在你身上的事，但你可以選擇你的角度。
@@ -481,5 +481,5 @@ CreditOMUKProductionAssistant,Production Assistant,
 ColoursUnlocked,Colours Unlocked,已解鎖色彩
 RegionsUnlocked,Regions Unlocked,已解鎖區域
 ProgressPercentage,Progress Percentage,進度
-OverwriteCloudSave,ARE YOU SURE? THIS WILL OVERWRITE THE CURRENT CLOUD SAVE!,
-OverwriteLocalSave,ARE YOU SURE? THIS WILL OVERWRITE YOUR LOCAL SAVED GAME!,
+OverwriteCloudSave,ARE YOU SURE? THIS WILL OVERWRITE THE CURRENT CLOUD SAVE!,這會覆寫目前的雲端存檔，確定嗎？
+OverwriteLocalSave,ARE YOU SURE? THIS WILL OVERWRITE YOUR LOCAL SAVED GAME!,這會覆寫目前的本地存檔，確定嗎？

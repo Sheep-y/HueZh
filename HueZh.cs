@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using ZyMod;
 using static ZyMod.ModHelpers;
 
@@ -42,23 +43,30 @@ namespace HueZh {
          return data;
       }
 
-      private static void OverrideLanguage ( string[] lines, ref int languageID, ref string ___selectedLanguage, Dictionary< string, int > ___languages  ) { try {
-         if ( lines == null ) return;
+      private static void OverrideLanguage ( string[] lines, ref int languageID, ref string ___selectedLanguage, Dictionary< string, int > ___languages ) { try {
+         if ( lines == null || lines.Length <= 1 ) return;
          Info( "Original game language is {0}.  {1} lines found.", ___selectedLanguage, lines.Length );
+         #if DEBUG
+         File.WriteAllText( Path.Combine( RootMod.AppDataDir, "Orig.csv" ), string.Join( "\r\n", lines ) );
+         #endif
 
          var comma = new char[]{ ',' };
          var map = new Dictionary< string, string >();
-         foreach ( var line in ReadData().Split( new string[]{ "\r\n" }, StringSplitOptions.None ) ) {
+         foreach ( var line in ReadData().Split( new string[]{ "\r\n" }, StringSplitOptions.None ).Skip( 1 ) ) {
             if ( line.Length == 0 ) continue;
             var cells = line.Split( comma, 2, StringSplitOptions.None );
             if ( cells.Length <= 1 || cells[ 0 ].Length == 0 ) continue;
-            Fine( "Loaded {0}", cells[0] );
-            Debug.Assert( cells[0][0] != '"' );
+            Fine( "Loaded {0}", cells[ 0 ] );
+            Debug.Assert( cells[ 0 ][ 0 ] != '"' );
             map[ cells[ 0 ] ] = line;
          }
-         Info( "Chinese data loaded." );
+         Info( "Chinese data loaded ({0} entries).", map.Count );
+         if ( map.Count <= 1 ) {
+            Error( "Too few entries.  Is the file using CRLF (RFC 4180)?  Aborting." );
+            return;
+         }
 
-         for ( var i = lines.Length - 1 ; i >= 0 ; i-- ) {
+         for ( var i = lines.Length - 1 ; i >= 1 ; i-- ) {
             var cells = lines[ i ].Split( comma, 2, StringSplitOptions.None );
             if ( cells.Length <= 1 || cells[ 0 ].Length == 0 ) continue;
             Debug.Assert( cells[0][0] != '"' );
@@ -68,19 +76,24 @@ namespace HueZh {
                line = new StringBuilder().AppendCsvLine( cells[ 0 ], cells[ 1 ], "" ).ToString();
             } else
                Fine( "Updating {0}", cells[ 0 ] );
-            lines[ i ] = line;
+            var newLine = Regex.Split( line, LocalizedText.SPLIT_RE ).ToArray();
+            if ( newLine.Length >= 3 && ( newLine[ 2 ].Length > 0 || newLine[ 1 ].Length > 0 ) ) {
+               lines[ i ] = line;
+               if ( newLine.Length > 3 ) Warn( "Possibily malformed line: {0}", line );
+            } else
+               Error( "Invalid line: {0}", line );
          }
 
-         Info( "Chinese data added to game.  Changing game langauge to chinese." );
+         Info( "Chinese data injected.  Changing game language to chinese." );
          languageID = 2;
          ___selectedLanguage = "chinese";
+         lines[0] = "Column,english,chinese";
          if ( ___languages.TryGetValue( "english", out var pos ) && pos == 1 ) {
             ___languages.Clear();
             ___languages.Add( "english", 1 );
             ___languages.Add( "chinese", 2 );
          } else
             Warn( "Unexpected game language list; english not at col 1: {0}", string.Join( ", ", ___languages.OrderBy( e => e.Value ).Select( e => $"{e.Value}:{e.Key}" ).ToArray() ) );
-
       } catch ( Exception ex ) { Err( ex ); } }
    }
 

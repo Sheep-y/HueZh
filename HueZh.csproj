@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DotNet35</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DotNet35, NoConfig</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DotNet35, NoConfig</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -83,7 +83,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="res\HueZh.csv" />
-    <None Include="res\HueZh.csv.gz" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource.resx">
@@ -95,5 +94,32 @@
   <PropertyGroup>
     <PreBuildEvent>rem del "$(ProjectDir)res\HueZh.csv.gz"
 rem "C:\Program Files\7-Zip\7z.exe" a -mx9 "$(ProjectDir)res\HueZh.csv.gz" "$(ProjectDir)res\HueZh.csv"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>set ResDir=$(ProjectDir)res\
+set DeployDir=$(ProjectDir)deploy\
+
+mkdir "%25DeployDir%25"
+mkdir "%25DeployDir%25\src"
+mkdir "%25DeployDir%25\src\res"
+mkdir "%25DeployDir%25\src\Properties"
+del /q "%25DeployDir%25\*.*"
+del /q "%25DeployDir%25\src\*.*"
+
+copy "$(TargetPath)" "%25DeployDir%25"
+copy "$(TargetDir)0Harmony.dll" "%25DeployDir%25"
+copy "$(TargetDir)Mono.Cecil.dll" "%25DeployDir%25"
+copy "$(TargetDir)MonoMod.RuntimeDetour.dll" "%25DeployDir%25"
+copy "$(TargetDir)MonoMod.Utils.dll" "%25DeployDir%25"
+
+copy "$(ProjectDir)LICENSE" "%25DeployDir%25src"
+copy "%25ResDir%25HueZh.csv" "%25DeployDir%25src\res"
+copy "%25ResDir%25LICENSE.*" "%25DeployDir%25src\res"
+copy "$(ProjectDir)*.cs" "%25DeployDir%25src"
+copy "$(ProjectDir)*.csproj" "%25DeployDir%25src"
+copy "$(ProjectDir)*.resx" "%25DeployDir%25src"
+copy "$(ProjectDir)Properties" "%25DeployDir%25src\Properties\"
+
+"C:\Program Files\7-Zip\7z.exe" a -r -mx9 "%25DeployDir%25HueZh.7z" "%25DeployDir%25*.*"</PostBuildEvent>
   </PropertyGroup>
 </Project>

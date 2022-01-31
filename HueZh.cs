@@ -65,21 +65,21 @@ namespace HueZh {
             if ( ! map.TryGetValue( cells[ 0 ], out var line ) ) {
                cells = new StringReader( lines[ i ] ).ReadCsvRow().ToArray();
                Info( "Untranslated: {0} => {1}", cells[0], cells[1] );
-               line = new StringBuilder().AppendCsvLine( cells[ 0 ], cells[ 1 ], cells[ 1 ] ).ToString();
+               line = new StringBuilder().AppendCsvLine( cells[ 0 ], cells[ 1 ], "" ).ToString();
             } else
                Fine( "Updating {0}", cells[ 0 ] );
             lines[ i ] = line;
          }
 
+         Info( "Chinese data added to game.  Changing game langauge to chinese." );
          languageID = 2;
          ___selectedLanguage = "chinese";
-         Info( "Chinese data added to game.  Changing game langauge to chinese." );
          if ( ___languages.TryGetValue( "english", out var pos ) && pos == 1 ) {
             ___languages.Clear();
             ___languages.Add( "english", 1 );
             ___languages.Add( "chinese", 2 );
          } else
-            Warn( "Unexpected game language list: {0}", string.Join( ", ", ___languages.OrderBy( e => e.Value ).Select( e => $"{e.Value}:{e.Key}" ).ToArray() ) );
+            Warn( "Unexpected game language list; english not at col 1: {0}", string.Join( ", ", ___languages.OrderBy( e => e.Value ).Select( e => $"{e.Value}:{e.Key}" ).ToArray() ) );
 
       } catch ( Exception ex ) { Err( ex ); } }
    }

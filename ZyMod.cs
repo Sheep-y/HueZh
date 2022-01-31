@@ -97,6 +97,7 @@ namespace ZyMod {
       public static FieldInfo  Field ( this Type type, string name ) => type?.GetField( name, Public | NonPublic | Instance | Static );
       public static PropertyInfo Property ( this Type type, string name ) => type?.GetProperty( name, Public | NonPublic | Instance | Static );
 
+      #if ! NoConfig
       public static bool TryParse ( Type valueType, string val, out object parsed, bool logWarnings = true ) { parsed = null; try {
          if ( valueType == typeof( string ) ) { parsed = val; return true; }
          if ( IsBlank( val ) || val == "null" ) return ! ( valueType.IsValueType || valueType.IsEnum );
@@ -125,7 +126,9 @@ namespace ZyMod {
          }
          return parsed != null;
       } catch ( ArgumentException ) { if ( logWarnings ) Warn( "Invalid value for {0}: {1}", valueType.FullName, val ); return false; } }
+      #endif
 
+      #if ! NoCsv
       /** Write data as a csv row, and then start a new line.  Null will be written as "null". */
       public static void WriteCsvLine ( this TextWriter tw, params object[] values ) => tw.Write( new StringBuilder().AppendCsvLine( values ).Append( "\r\n" ) );
 
@@ -194,6 +197,7 @@ namespace ZyMod {
                pos++;
          }
       }
+      #endif
 
       /* Dump unity components to log. *
       public static void DumpComponents ( UnityEngine.GameObject e ) => DumpComponents( Info, "", new HashSet<object>(), e );
@@ -238,6 +242,7 @@ namespace ZyMod {
       #endif
    }
 
+   #if ! NoConfig
    public abstract class BaseConfig { // Abstract code to load and save simple config object to text-based file.  By default only process public instant fields, may be filtered by attributes.
       protected virtual string GetFileExtension () => ".conf";
       public virtual string GetDefaultPath () => Path.Combine( RootMod.AppDataDir, RootMod.ModName + GetFileExtension() );
@@ -298,6 +303,7 @@ namespace ZyMod {
       protected virtual void _Log ( TraceLevel level, object msg, params object[] arg ) => RootMod.Log?.Write( level, msg, arg );
    }
 
+   #if ! NoCsv
    public class CsvConfig : BaseConfig { // Load and save CSV to and from a config object.
       protected override string GetFileExtension () => ".csv";
       protected override void _ReadFile ( object subject, string path ) {
@@ -315,6 +321,7 @@ namespace ZyMod {
          else f.WriteCsvLine( target.Name, value, comment ?? "" );
       }
    }
+   #endif
 
    public class IniConfig : BaseConfig { // Load and save INI to and from a config object.  Same field handling as CsvConfig.
       protected override string GetFileExtension () => ".ini";
@@ -344,6 +351,7 @@ namespace ZyMod {
       public ConfigAttribute ( string comment ) { Comment = comment; }
       public string Comment;
    }
+   #endif
 
    public class Patcher { // Patch classes may inherit from this class for manual patching.  You can still use Harmony.PatchAll, of course.
       protected static readonly object sync = new object();
@@ -403,7 +411,7 @@ namespace ZyMod {
          set { lock ( buffer ) { _LogLevel = value;
                   if ( value == Off ) { flushTimer?.Stop(); buffer.Clear(); }
                   else flushTimer?.Start(); }  } }
-      private string _TimeFormat = "hh:mm:ss.fff ";
+      private string _TimeFormat = "HH:mm:ss.fff ";
       public string TimeFormat { get { lock ( buffer ) return _TimeFormat; } set { DateTime.Now.ToString( value ); lock ( buffer ) _TimeFormat = value; } }
       public readonly uint FlushInterval = 2; // Seconds.  0 to write and flush every line, reliable but way slower.
       public readonly string LogPath;

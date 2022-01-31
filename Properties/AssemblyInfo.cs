@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "HueZh" )]
-[assembly: AssemblyDescription( "Chinese conversion mod for Hue (2016 game), Curve Digital" )]
+[assembly: AssemblyDescription( "Chinese conversion mod for Hue (2016 game)" )]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany( "Sheepy" )]
-[assembly: AssemblyProduct( "HueZh" )]
+[assembly: AssemblyProduct( "" )]
 [assembly: AssemblyCopyright( "Copyright © Yeung Ho Yiu 2022, GPL v3" )]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

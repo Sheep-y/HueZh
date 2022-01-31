@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Readme.md" />
     <None Include="res\HueZh.csv" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +119,7 @@ copy "$(TargetDir)MonoMod.Utils.dll" "%25DeployDir%25HueZh"
 copy "%25ResDir%25HueZh.csv" "%25DeployDir%25src\res"
 copy "%25ResDir%25LICENSE.*" "%25DeployDir%25src\res"
 copy "$(ProjectDir)LICENSE" "%25DeployDir%25src"
+copy "$(ProjectDir)*.md" "%25DeployDir%25"
 copy "$(ProjectDir)*.config" "%25DeployDir%25src"
 copy "$(ProjectDir)*.cs" "%25DeployDir%25src"
 copy "$(ProjectDir)*.csproj" "%25DeployDir%25src"

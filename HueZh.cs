@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using ZyMod;
 using static ZyMod.ModHelpers;
 
@@ -51,7 +52,10 @@ namespace HueZh {
          languageID = 1;
          if ( ___selectedLanguage == "chinese" ) { Info( "Game language is already chinese, index {0}.", languageID ); return; }
          Info( "Original game language is {0}.  {1} lines found.", ___selectedLanguage, lines.Length );
-         lock ( TextPath ) File.WriteAllText( Path.Combine( RootMod.AppDataDir, "GameText.csv" ), string.Join( "\r\n", lines ) );
+         var orig = lines.Clone() as string[];
+         ThreadPool.QueueUserWorkItem( ( _ ) => {
+            lock ( TextPath ) File.WriteAllText( Path.Combine( RootMod.AppDataDir, "GameText.csv" ), string.Join( "\r\n", orig ) );
+         } );
          OverrideLanguage( lines );
          ___selectedLanguage = "chinese";
          lines[ 0 ] = "Column,chinese";

@@ -63,9 +63,9 @@ namespace HueZh {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] HueZh_csv_gz {
+        internal static byte[] HueZh_csv {
             get {
-                object obj = ResourceManager.GetObject("HueZh_csv_gz", resourceCulture);
+                object obj = ResourceManager.GetObject("HueZh_csv", resourceCulture);
                 return ((byte[])(obj));
             }
         }

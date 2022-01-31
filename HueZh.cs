@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -33,11 +32,11 @@ namespace HueZh {
             Info( "Loading data from {0} ({1} bytes).  The file is user editable.  Delete it to reset to default.", TextPath, new FileInfo( TextPath ).Length );
             try { return File.ReadAllText( TextPath ); } catch ( SystemException x ) { Warn( x ); }
          }
-         Info( "Loading from build-in data ({0} bytes compressed).", Resource.HueZh_csv_gz.Length );
-         var data = new StreamReader( new DeflateStream( new MemoryStream( Resource.HueZh_csv_gz, false ), CompressionMode.Decompress ), Encoding.UTF8 ).ReadToEnd();
+         Info( "Loading from build-in data ({0} bytes).", Resource.HueZh_csv.Length );
+         var data = Encoding.UTF8.GetString( Resource.HueZh_csv );
          Info( "Recreating {0}", TextPath );
          try {
-            File.WriteAllText( TextPath, data, Encoding.UTF8 );
+            File.WriteAllBytes( TextPath, Resource.HueZh_csv );
             Fine( "{1} bytes written to {0}", TextPath, new FileInfo( TextPath ).Length );
          } catch ( SystemException x ) { Warn( x ); }
          return data;

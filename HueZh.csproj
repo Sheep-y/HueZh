@@ -93,7 +93,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>del "$(ProjectDir)res\HueZh.csv.gz"
-"C:\Program Files\7-Zip\7z.exe" a -mx9 "$(ProjectDir)res\HueZh.csv.gz" "$(ProjectDir)res\HueZh.csv"</PreBuildEvent>
+    <PreBuildEvent>rem del "$(ProjectDir)res\HueZh.csv.gz"
+rem "C:\Program Files\7-Zip\7z.exe" a -mx9 "$(ProjectDir)res\HueZh.csv.gz" "$(ProjectDir)res\HueZh.csv"</PreBuildEvent>
   </PropertyGroup>
 </Project>

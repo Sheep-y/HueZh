@@ -24,7 +24,7 @@ namespace HueZh {
    }
 
    internal class HuePatcher : Patcher {
-      private static string TextPath = Path.Combine( Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ), "HueZh.csv" );
+      private static string TextPath => Path.Combine( RootMod.AppDataDir, "HueZh.csv" );
 
       internal void Apply () {
          Patch( typeof( LocalizedText ), "SetToLanguage", nameof( OverrideLocalizedText ) );
@@ -51,9 +51,7 @@ namespace HueZh {
          languageID = 1;
          if ( ___selectedLanguage == "chinese" ) { Info( "Game language is already chinese, index {0}.", languageID ); return; }
          Info( "Original game language is {0}.  {1} lines found.", ___selectedLanguage, lines.Length );
-         #if DEBUG
-         lock ( TextPath ) File.WriteAllText( Path.Combine( RootMod.AppDataDir, "Orig.csv" ), string.Join( "\r\n", lines ) );
-         #endif
+         lock ( TextPath ) File.WriteAllText( Path.Combine( RootMod.AppDataDir, "GameText.csv" ), string.Join( "\r\n", lines ) );
          OverrideLanguage( lines );
          ___selectedLanguage = "chinese";
          lines[ 0 ] = "Column,chinese";

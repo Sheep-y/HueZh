@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using ZyMod;
 using static ZyMod.ModHelpers;
@@ -37,9 +35,8 @@ namespace HueZh {
             Info( "Loading data from {0} ({1} bytes).  The file is user editable.  Delete it to reset to default.", TextPath, new FileInfo( TextPath ).Length );
             try { return File.ReadAllText( TextPath ); } catch ( SystemException x ) { Warn( x ); }
          }
-         Info( "Loading from build-in data ({0} bytes).", Resource.HueZh_csv.Length );
+         Info( "Loading build-in data ({0} bytes) to recreate {1}.", Resource.HueZh_csv.Length, TextPath );
          var data = Encoding.UTF8.GetString( Resource.HueZh_csv );
-         Info( "Recreating {0}", TextPath );
          try {
             File.WriteAllBytes( TextPath, Resource.HueZh_csv );
             Fine( "{1} bytes written to {0}", TextPath, new FileInfo( TextPath ).Length );
@@ -76,10 +73,7 @@ namespace HueZh {
             map[ cells[ 0 ] ] = cells[ 1 ].Replace( '\r', ' ' ).Replace( '\n', ' ' );
          }
          Info( "Chinese data loaded ({0} translated, {1} keep original).", map.Count, blank.Count );
-         if ( map.Count <= 1 ) {
-            Error( "Too few entries, something is wrong.  Aborting." );
-            return;
-         }
+         if ( map.Count <= 1 ) { Error( "Too few entries, something is wrong.  Aborting." ); return; }
          var count = 0;
          for ( var i = lines.Length - 1 ; i >= 1 ; i-- ) {
             var cells = new StringReader( lines[ i ] ).ReadCsvRow( buffer )?.ToArray();
@@ -91,9 +85,8 @@ namespace HueZh {
                text = cells[ 1 ].Length == 0 ? "?" : cells[ 1 ];
             } else
                count++;
-            var line = new StringBuilder().AppendCsvLine( key, text ).ToString();
             Fine( "Updating {0}", key );
-            lines[ i ] = line;
+            lines[ i ] = new StringBuilder().AppendCsvLine( key, text ).ToString();
          }
          Info( "{0} entries updated.", count );
       } catch ( Exception ex ) { Err( ex ); } }

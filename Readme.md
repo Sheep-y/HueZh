@@ -1,5 +1,5 @@
 # HueZh #
-## Chinese conversion mod of Hue (2016 game) ##
+## Hue 遊戲漢化補丁 - Chinese conversion mod of Hue (2016 game) ##
 
 HueZh 是 2016 年遊戲 Hue 的繁體中文/正體中文漢化補丁。
 本補丁不修改任何檔案，在遊戲目錄中解壓即可將遊戲變成中文。

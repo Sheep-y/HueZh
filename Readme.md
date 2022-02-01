@@ -24,7 +24,7 @@ https://github.com/Sheep-y/HueZh/releases
 > 
 > %ProgramFiles%\Epic Games\Hue
 
-4. 重啓遊戲。完工。
+4. 重啓遊戲。完工。建議去 設定 > 視像 啓用字幕。
 
 src 目錄包括了源碼和授權，不影響運作，不需要搬入遊戲目錄，可以刪除。
 發佈包必需包括此目錄以符合開源授權。

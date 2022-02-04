@@ -110,7 +110,7 @@ TutorialHold,長按此鍵
 TutorialToPull,拉
 GoBack,返回？
 LighthouseKeeperIntroA0,漁夫們瞥見了些甚麼……
-LighthouseKeeperIntroA1,……異常的東西……
+LighthouseKeeperIntroA1,……怪東西……
 LighthouseKeeperIntroA2,就在燈塔再過一點。
 LighthouseKeeperIntroB0,你的媽媽失蹤了？
 LighthouseKeeperIntroB1,我相信她會回來的。
@@ -191,7 +191,7 @@ WaterLadyA1,我嚇倒我了……
 WaterLadyA2,我？我走累了，在休息。
 WaterLadyA3,小心別掉進水！
 WaterLadyB0,我聽說瀑布後面有洞穴……
-WaterLadyB1,……一個又一個洞穴，連綿不斷、沒有盡頭。
+WaterLadyB1,……一洞又一洞，無窮無盡。
 WaterLadyB2,不過我不會去找。
 WaterLadyB3,因為太危險了！
 WaterLadyC0,我有時會來這兒打水……
@@ -208,7 +208,7 @@ WaterLadyHomeB2,太棒了！
 WaterLadyHomeC0,我想請你喝一杯茶，但水不夠。
 WaterLadyHomeC1,要去瀑布一趟。
 WaterLadyHomeC2,改天吧……今天太忙了！
-Skeleton1A0,喂，你撞到我了！
+Skeleton1A0,喂，小心點！
 Skeleton1B0,停！
 Skeleton1C0,你真沒心沒肺！
 Skeleton2A0,本骨懸若日月，不會動搖！
@@ -338,18 +338,18 @@ LumberjackC4,真奇怪。
 VO/Intro0,致親愛的色調，
 VO/Intro1,噢，我運氣奇糟。
 VO/Intro2,留下你一個人，我心如刀割。
-VO/Intro3,吃裏扒外的灰博士意圖偷走我開發的環彩光戒。用它能觀察和改變色彩。
-VO/Intro4,有人說色彩乃虛假，稱之曰虛色。哈！對灰博士來說確實是虛空。
+VO/Intro3,吃裏扒外的灰博士意圖偷走我開發的環彩光戒。它能觀察和改變色彩。
+VO/Intro4,有人說色彩乃虛假，是虛色。哈！對灰博士來說確實是虛空。
 VO/Intro5,總之，發生了意外。
 VO/Intro6,我變成奇特的色彩，隱形了。
-VO/Intro7,環彩光戒……碎了，令色彩碎片四散。
-VO/Intro8,我在家裡觀察了數星期，在看、在等。
+VO/Intro7,環彩光戒……碎了。色彩的碎片四散。
+VO/Intro8,我留在家數星期，在看、在等。
 VO/Intro9,染上色彩的我無法跟你對話，也無法碰觸單色調的世事。
 VO/Intro10,所以我走了。我會去大學，找我私藏的自制色彩道具。
-VO/Intro11,我懇切祈求你能找到環彩光戒的碎片。
+VO/Intro11,我祈求你能找到光戒的碎片。
 VO/Aqua0,太古以來，我們指目天空，稱之曰藍。
 VO/Aqua1,是人所共知的領域，是聯繫人與人的共同概念。
-VO/Aqua2,但你眼中的藍，跟我眼中的藍是一樣的嗎？
+VO/Aqua2,但你眼中的藍，跟我的是一樣的嗎？
 VO/Aqua3,也許，你所見的藍，其實只是一種灰。
 VO/Aqua4,也許，世上所有人，都只見深深淺淺的灰。
 VO/Aqua5,色調，看見了嗎？這……這是我們的價值。
@@ -371,7 +371,7 @@ VO/Purple9,你會質疑……萬象的虛實。
 VO/Orange0,當我首次遇見灰博士時，大學被踏實的橙光籠罩著。
 VO/Orange1,夏日飛逝，秋日的乾冷殺我一個措手不及。
 VO/Orange2,我坐在草坪上，左右是文獻，突然來一陣冷風將它們吹亂。
-VO/Orange3,其中一張紙逃離我的手，乘風起舞。
+VO/Orange3,其中一頁逃離我的手，乘風起舞。
 VO/Orange4,一名比我年紀稍大的男仕追著它，抓了三四次後終於成功。
 VO/Orange5,還記得他物歸原主時展露的和藹笑容。
 VO/Orange6,我們談了起來。他居然在大學學報上讀過我的研究！
@@ -448,13 +448,13 @@ VO/UniversityStart2,灰博士會從講臺上向下望，瞬間脫去他的嚴肅
 VO/UniversityStart3,他會抱起你，走過來，笑著將你歸還我的懷抱。
 VO/UniversityStart4,愛是無法測量的，色調。它在心內，如同色彩。我埋沒了它。
 VO/UniversityStart5,我自私地埋沒了愛。待一切完結時，希望你能辨明我的錯。
-VO/UniversityStart6,愛著你的 母親 上
+VO/UniversityStart6,愛你的 母親 上
 VO/UniversityEnd0,親愛的色調，許久不見。你長大了許多。
-VO/UniversityEnd1,你的媽媽……我提醒過她，但她沒聽。
+VO/UniversityEnd1,你的媽媽……沒聽我的提醒。
 VO/UniversityEnd2,我只好逐出她，以為能夠保護她……能夠保護你……
 VO/UniversityEnd3,她不明白，有些人會選擇視而不見。
 VO/UniversityEnd4,我沒有偷她的環彩色戒。我只是試圖摧毀它……免得它摧毀你的媽媽。
-VO/UniversityEnd5,我現在知道她當時已經充分掌握了戒指。她知道自己在做甚麼。
+VO/UniversityEnd5,我現在知道她當時已經掌握了光戒，知道自己在做甚麼。
 VO/UniversityEnd6,當我擊碎戒指時，也同時改變了你的媽媽的根源。
 VO/UniversityEnd7,我的唯一救贖就是，讓你追隨她的足跡……體驗她的成果。
 VO/UniversityEnd8,我們不是在看事物的真相，色調。我們是在看自己的。

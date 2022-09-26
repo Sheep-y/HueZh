@@ -1,5 +1,5 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,61 +9,123 @@ using System.Reflection.Emit;
 using System.Text;
 using static System.Diagnostics.TraceLevel;
 using static System.Reflection.BindingFlags;
+
+#if ! NoPatch
+using HarmonyLib;
 using static HarmonyLib.HarmonyPatchType;
+#endif
 
 // Sheepy's "Universal" skeleton mod and tools.  No depency other than Harmony2 / HarmonyX.
-// Bootstrap, Background Logging, Roundtrip Config, Reflection, Manual Patcher with Unpatch. Reasonably well unit tested.
+// Bootstrap, Background Logging, Roundtrip Config, Reflection, Manual Patcher with Unpatch.
 namespace ZyMod {
-   public abstract class RootMod {
-      protected static readonly object sync = new object();
-      private static RootMod instance;
-      public static ZyLogger Log { get; private set; }
-      internal static string ModName { get { lock ( sync ) return instance?.GetModName() ?? "ZyMod"; } }
+   using LogFunc = Action< TraceLevel, object, object[] >;
 
-      protected virtual bool IgnoreAssembly ( Assembly asm ) => asm is AssemblyBuilder || asm.FullName.StartsWith( "DMDASM." ) || asm.FullName.StartsWith( "HarmonyDTFAssembly" );
+   // All the important mod data in one place.  
+   public class ModComponent {
+      protected static readonly object sync = new object();
+      public static string ModName, ModPath, ModDir, AppDataDir;
+      public static LogFunc _Logger;
+      public static LogFunc Logger { get { lock ( sync ) return _Logger; } set { lock ( sync ) _Logger = value; } }
+      public static void Err ( object msg ) => Error( msg );
+      public static T Err < T > ( object msg, T val ) { Error( msg ); return val; }
+      public static void Error ( object msg, params object[] arg ) => Log( TraceLevel.Error, msg, arg );
+      public static void Warn  ( object msg, params object[] arg ) => Log( TraceLevel.Warning, msg, arg );
+      public static void Info  ( object msg, params object[] arg ) => Log( TraceLevel.Info, msg, arg );
+      public static void Fine  ( object msg, params object[] arg ) => Log( TraceLevel.Verbose, msg, arg );
+      public static void Log   ( TraceLevel lv, object msg, params object[] arg ) => Logger?.Invoke( lv, msg, arg );
+      #if ! NoLog
+      public static ZyLogger ZyLog;
+      #endif
+   }
+
+   public abstract class RootMod : ModComponent {
+      protected static RootMod instance;
+
+      protected virtual bool IgnoreAssembly ( Assembly asm ) => string.Equals( asm.GetType().FullName, "System.Reflection.Emit.AssemblyBuilder" ) || asm.FullName.StartsWith( "DMDASM." ) || asm.FullName.StartsWith( "HarmonyDTFAssembly" );
       protected virtual bool IsTargetAssembly ( Assembly asm ) => asm.GetName().Name == "Assembly-CSharp"; // If overrode, OnGameAssemblyLoaded may be called mutliple times
 
       public void Initialize () {
-         lock ( sync ) { if ( instance != null ) { Log?.Warn( "Mod already initialized" ); return; } instance = this; }
+         lock ( sync ) { if ( instance != null ) { Warn( "Mod already initialized" ); return; } instance = this; }
          try {
-            Log = new ZyLogger( Path.Combine( AppDataDir, ModName + ".log" ) );
-            AppDomain.CurrentDomain.UnhandledException += ( _, evt ) => Log?.Error( evt.ExceptionObject );
-            AppDomain.CurrentDomain.AssemblyResolve += ( _, evt ) => { Log?.Fine( "Resolving {0}", evt.Name ); return null; };
-            AppDomain.CurrentDomain.AssemblyLoad += ( _, evt ) => AsmLoaded( evt.LoadedAssembly );;
+            SetModIO();
+#if ! NoBootstrap
+            AppDomain.CurrentDomain.AssemblyLoad += AsmLoaded;
+            if ( shouldLogAssembly ) {
+               AppDomain.CurrentDomain.UnhandledException += ( _, evt ) => Error( evt.ExceptionObject );
+               AppDomain.CurrentDomain.AssemblyResolve += ( _, evt ) => { Fine( "Resolving {0}", evt.Name ); return null; };
+            }
             foreach ( var asm in AppDomain.CurrentDomain.GetAssemblies().ToArray() ) AsmLoaded( asm );
-            Log.Info( "Mod Initiated" );
+            Info( "Mod Initiated" );
          } catch ( Exception ex ) {
-            Log.Error( ex.ToString() );
+            Error( ex );
          }
       }
+      protected bool shouldLogAssembly = true;
 
+      private void AsmLoaded ( object sender, AssemblyLoadEventArgs evt ) => AsmLoaded( evt.LoadedAssembly );
       private void AsmLoaded ( Assembly asm ) {
          if ( IgnoreAssembly( asm ) ) return;
-         Log.Fine( "DLL {0}, {1}", asm.FullName, asm.CodeBase );
-         if ( IsTargetAssembly( asm ) ) GameLoaded( asm );
+         if ( shouldLogAssembly ) Fine( "DLL {0}, {1}", asm.FullName, asm.CodeBase );
+         if ( ! IsTargetAssembly( asm ) ) return;
+         GameLoaded( asm );
+         if ( ! shouldLogAssembly ) AppDomain.CurrentDomain.AssemblyLoad -= AsmLoaded;
       }
 
       private void GameLoaded ( Assembly asm ) { try {
-         Log.Info( "Target assembly loaded." );
+         Info( "Target assembly loaded." );
+#else
+         var asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( e => ! IgnoreAssembly( e ) && IsTargetAssembly( e ) );
+#endif
          OnGameAssemblyLoaded( asm );
-         var patches = new Harmony( ModName ).GetPatchedMethods().Select( e => Harmony.GetPatchInfo( e ) );
-         Log.Info( "Bootstrap complete." + ( patches.Any() ? "  Patched {0} methods with {1} patches." : "" ),
-            patches.Count(), patches.Sum( e => e.Prefixes.Count + e.Postfixes.Count + e.Transpilers.Count ) );
-      } catch ( Exception ex ) { Log.Error( ex ); } }
+         #if ! NoPatch
+         CountPatches();
+         #endif
+      } catch ( Exception ex ) { Error( ex ); } }
 
-      private static string _AppDataDir;
-      public static string AppDataDir { get {
-         if ( _AppDataDir != null ) return _AppDataDir;
-         lock ( sync ) { if ( instance == null ) return ""; _AppDataDir = instance.GetAppDataDir(); }
-         if ( string.IsNullOrEmpty( _AppDataDir ) ) return "";
-         try {
-            if ( ! Directory.Exists( _AppDataDir ) ) {
-               Directory.CreateDirectory( _AppDataDir );
-               if ( ! Directory.Exists( _AppDataDir ) ) _AppDataDir = "";
-            }
-         } catch ( Exception ) { _AppDataDir = ""; }
-         return _AppDataDir;
+      #if ! NoPatch
+      protected virtual void CountPatches () {
+         var patches = new Harmony( ModName ).GetPatchedMethods().Select( e => Harmony.GetPatchInfo( e ) );
+         Info( "Bootstrap complete.  Patched {0} methods with {1} patches.", patches.Count(), patches.Sum( e => e.Prefixes.Count + e.Postfixes.Count + e.Transpilers.Count ) );
+      }
+      #endif
+
+      protected virtual void SetModIO () { lock ( sync ) {
+         if ( ModName == null ) ModName = GetModName() ?? "ZyMod";
+         if ( ModPath == null ) ModPath = new Uri( Assembly.GetExecutingAssembly().CodeBase ).LocalPath;
+         if ( ModDir == null ) ModDir = Path.GetDirectoryName( ModPath );
+         if ( AppDataDir == null ) {
+            AppDataDir = instance.GetAppDataDir();
+            if ( ModHelpers.IsBlank( AppDataDir ) )
+               AppDataDir = "";
+            else try {
+               if ( ! Directory.Exists( AppDataDir ) ) {
+                  Directory.CreateDirectory( AppDataDir );
+                  if ( ! Directory.Exists( AppDataDir ) ) AppDataDir = "";
+               }
+            } catch ( Exception ) { AppDataDir = ""; }
+         }
+         #if ! NoLog
+         if ( Logger == null ) SetLogger();
+         #endif
       } }
+
+      protected virtual void SetLogger () { try {
+         string path = Path.Combine( AppDataDir, ModName + ".log" ), hint = ModName + ',' + path;
+         if ( ZyLog == null ) ZyLog = new ZyLogger( path );
+         Logger = ZyLog.Write;
+         // Write a hint file to direct users to mod log, if path is not game folder.
+         var hintFile = "ZyMods.log";
+         if ( string.IsNullOrEmpty( AppDataDir ) ) return;
+         if ( File.Exists( hintFile ) ) using ( var reader = new StreamReader( hintFile ) ) {
+            string line = reader.ReadLine();
+            while ( line != null ) {
+               if ( line.Equals( hint ) ) return; // Skip writing if mod log is already recorded
+               line = reader.ReadLine();
+            }
+         } else
+            File.WriteAllText( hintFile, "A list of mods and log locations, to help you find the logs.\r\nList may be incomplete or outdated.  Delete this file to refresh.\r\n" );
+         File.AppendAllText( hintFile, "\r\n" + hint );
+      } catch ( Exception x ) { Warn( x ); } }
 
       // Override / Implement these to change mod name, log dir, what to do on Assembly-CSharp, and where patches are located by Modder.
       protected virtual string GetModName () => GetType().Name;
@@ -72,46 +134,55 @@ namespace ZyMod {
    }
 
    public static class ModHelpers { // Assorted helpers
-      public static void Err ( object msg ) => Error( msg );
-      public static T Err < T > ( object msg, T val ) { Error( msg ); return val; }
-      public static void Error ( object msg, params object[] arg ) => RootMod.Log?.Error( msg, arg );
-      public static void Warn  ( object msg, params object[] arg ) => RootMod.Log?.Warn ( msg, arg );
-      public static void Info  ( object msg, params object[] arg ) => RootMod.Log?.Info ( msg, arg );
-      public static void Fine  ( object msg, params object[] arg ) => RootMod.Log?.Fine ( msg, arg );
-      public static bool Non0 ( float val ) => val != 0 && ! float.IsNaN( val ) && ! float.IsInfinity( val );
-      public static bool IsFound ( string path ) { if ( File.Exists( path ) ) return true; Warn( "Not Found: {0}", path ); return false; }
-      public static bool IsFound ( string path, out string found ) { found = path; return IsFound( path ); }
+      public static bool Non0 ( float val ) => val != 0 && Rational( val );
+      public static bool Rational ( float val ) => ! float.IsNaN( val ) && ! float.IsInfinity( val );
 
-      public static string ModPath => new Uri( Assembly.GetExecutingAssembly().CodeBase ).LocalPath;
-      public static string ModDir => Path.GetDirectoryName( ModPath );
+      public static IEnumerable< MethodInfo > Methods ( this Type type ) => type?.GetMethods( Public | NonPublic | Instance | Static | DeclaredOnly ).Where( e => ! e.IsAbstract );
+      public static IEnumerable< MethodInfo > Methods ( this Type type, string name ) => type?.Methods().Where( e => e.Name == name );
 
-      public static IEnumerable< MethodInfo > Methods ( this Type type ) => type.GetMethods( Public | NonPublic | Instance | Static ).Where( e => ! e.IsAbstract );
-      public static IEnumerable< MethodInfo > Methods ( this Type type, string name ) => type.Methods().Where( e => e.Name == name );
-
-      public static MethodInfo Method ( this Type type, string name ) => type?.GetMethod( name, Public | NonPublic | Instance | Static );
-      public static MethodInfo Method ( this Type type, string name, params Type[] types ) => type?.GetMethod( name, Public | NonPublic | Instance | Static, null, types ?? Type.EmptyTypes, null );
+      public static MethodInfo Method ( this Type type, string name ) => type?.GetMethod( name, Public | NonPublic | Instance | Static | DeclaredOnly );
+      public static MethodInfo Method ( this Type type, string name, int param_count ) => Methods( type, name ).FirstOrDefault( e => e.GetParameters().Length == param_count );
+      public static MethodInfo Method ( this Type type, string name, params Type[] types ) => type?.GetMethod( name, Public | NonPublic | Instance | Static | DeclaredOnly, null, types ?? Type.EmptyTypes, null );
       public static MethodInfo TryMethod ( this Type type, string name ) { try { return Method( type, name ); } catch ( Exception ) { return null; } }
-      public static MethodInfo TryMethod ( this Type type, string name, params Type[] types ) { try { return Method( type, name, types ); } catch ( Exception ) { return null; } }
-      public static object MethodInvoke ( this object target, string name, params object[] args ) => Method( target.GetType(), name ).Invoke( target, args );
-      public static object TryInvoke ( this object target, string name, params object[] args ) { try {  return MethodInvoke( target, name, args ); } catch ( Exception x ) { return x; } }
-      public static FieldInfo  Field ( this Type type, string name ) => type?.GetField( name, Public | NonPublic | Instance | Static );
-      public static PropertyInfo Property ( this Type type, string name ) => type?.GetProperty( name, Public | NonPublic | Instance | Static );
+      public static object Run ( this MethodInfo func, object self, params object[] args ) => func.Invoke( self, args );
+      public static object RunStatic ( this MethodInfo func, params object[] args ) => func.Invoke( null, args );
+      public static object TryRun ( this MethodInfo func, object self, params object[] args ) { try { return Run( func, self, args ); } catch ( Exception x ) { return x; } }
+      public static object TryRun ( this object self, string name, params object[] args ) { try { return self.GetType().Method( name, args.Length ).Run( self, args ); } catch ( Exception x ) { return x; } }
+      public static object TryRunStatic ( this MethodInfo func, params object[] args ) { try { return RunStatic( func, args ); } catch ( Exception x ) { return x; } }
+      public static object TryRunStatic ( this Type self, string name, params object[] args ) { try { return self.Method( name, args.Length ).RunStatic( args ); } catch ( Exception x ) { return x; } }
+      public static FieldInfo  Field ( this Type type, string name ) => type?.GetField( name, Public | NonPublic | Instance | Static | DeclaredOnly );
+      public static PropertyInfo Property ( this Type type, string name ) => type?.GetProperty( name, Public | NonPublic | Instance | Static | DeclaredOnly );
+
+      #if CIL
+      private static MethodInfo GetILs, EnumMoveNext;
+      // Find the instructions of a method.  Return null on failure.  TODO: Does not work on HarmonyX
+      public static IEnumerable< CodeInstruction > GetCodes ( this MethodBase subject ) {
+         if ( subject == null ) return null;
+         if ( GetILs == null ) GetILs = typeof( Harmony ).Assembly.GetType( "HarmonyLib.MethodBodyReader" )?.Method( "GetInstructions", typeof( ILGenerator ), typeof( MethodBase ) );
+         var list = GetILs?.TryRunStatic( null, subject ) as IList;
+         var args = list?.GetType().GenericTypeArguments;
+         if ( list == null || list.Count == 0 || args.Length == 0 ) return null;
+         var code = args[ 0 ].Method( "GetCodeInstruction", 0 );
+         return list.Cast<object>().Select( e => code?.Run( e ) as CodeInstruction );
+      }
+      // Find the MoveNext method of an iterator method.
+      public static MethodInfo MoveNext ( this MethodBase subject ) {
+         if ( subject == null ) return null;
+         if ( EnumMoveNext != null ) return EnumMoveNext.RunStatic( subject ) as MethodInfo;
+         else if ( GetILs == null ) {
+            EnumMoveNext = typeof( AccessTools ).Method( "EnumeratorMoveNext", typeof( MethodBase ) );
+            if ( EnumMoveNext != null ) return MoveNext( subject );
+         }
+         var op = subject.GetCodes()?.FirstOrDefault( e => e?.opcode.Name == "newobj" );
+         return ( op.operand as ConstructorInfo )?.DeclaringType.Method( "MoveNext", 0 );
+      }
+      #endif
 
       #if ! NoConfig
-      public static bool TryParse ( Type valueType, string val, out object parsed, bool logWarnings = true ) { parsed = null; try {
+      public static bool TryParse ( Type valueType, string val, out object parsed, LogFunc logger = null ) { parsed = null; try {
          if ( valueType == typeof( string ) ) { parsed = val; return true; }
          if ( IsBlank( val ) || val == "null" ) return ! ( valueType.IsValueType || valueType.IsEnum );
          switch ( valueType.FullName ) {
-            case "System.SByte"   : if ( SByte .TryParse( val, out sbyte  bval ) ) parsed = bval; break;
-            case "System.Int16"   : if ( Int16 .TryParse( val, out short  sval ) ) parsed = sval; break;
-            case "System.Int32"   : if ( Int32 .TryParse( val, out int    ival ) ) parsed = ival; break;
-            case "System.Int64"   : if ( Int64 .TryParse( val, out long   lval ) ) parsed = lval; break;
-            case "System.Byte"    : if ( Byte  .TryParse( val, out byte   Bval ) ) parsed = Bval; break;
-            case "System.UInt16"  : if ( UInt16.TryParse( val, out ushort Sval ) ) parsed = Sval; break;
-            case "System.UInt32"  : if ( UInt32.TryParse( val, out uint   Ival ) ) parsed = Ival; break;
-            case "System.UInt64"  : if ( UInt64.TryParse( val, out ulong  Lval ) ) parsed = Lval; break;
-            case "System.Single"  : if ( Single.TryParse( val, out float  fval ) ) parsed = fval; break;
-            case "System.Double"  : if ( Double.TryParse( val, out double dval ) ) parsed = dval; break;
             case "System.Boolean" : switch ( val.ToLowerInvariant() ) {
                                     case "true" : case "yes" : case "1" : parsed = true ; break;
                                     case "false" : case "no" : case "0" : parsed = false; break;
@@ -120,17 +191,26 @@ namespace ZyMod {
                if ( DateTime.TryParse( val, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime dt ) ) parsed = dt;
                break;
             default :
-               if ( valueType.IsEnum ) { parsed = Enum.Parse( valueType, val ); break; }
-               if ( logWarnings ) Warn( new NotImplementedException( "Unsupported field type " + valueType.FullName ) );
+               if ( valueType.IsValueType ) try {
+                  parsed = Convert.ChangeType( val, valueType );
+                  return true;
+               } catch ( SystemException ) { return false; }
+               logger?.Invoke( Warning, new NotImplementedException( "Unsupported field type " + valueType.FullName ), null );
                break;
          }
          return parsed != null;
-      } catch ( ArgumentException ) { if ( logWarnings ) Warn( "Invalid value for {0}: {1}", valueType.FullName, val ); return false; } }
+      } catch ( ArgumentException ) {
+         logger?.Invoke( Warning, "Invalid value for {0}: {1}", new object[]{ valueType.FullName, val } );
+         return false;
+      } }
       #endif
 
       #if ! NoCsv
       /** Write data as a csv row, and then start a new line.  Null will be written as "null". */
-      public static void WriteCsvLine ( this TextWriter tw, params object[] values ) => tw.Write( new StringBuilder().AppendCsvLine( values ).Append( "\r\n" ) );
+      public static TextWriter WriteCsvLine ( this TextWriter tw, params object[] values ) {
+         tw.Write( new StringBuilder().AppendCsvLine( values ).Append( "\r\n" ) );
+         return tw;
+      }
 
       /** Append data as a csv row, on a new line if builder is non-empty.  Null will be written as "null". */
       public static StringBuilder AppendCsvLine ( this StringBuilder buf, params object[] values ) {
@@ -148,7 +228,7 @@ namespace ZyMod {
       /** <summary>Try read a csv row from a Reader.  May consume multiple lines.  Linebreaks in cells will become \n</summary>
        * <param name="source">Reader to get line data from.</param>
        * <param name="row">Cell data enumeration (forward-only), or null if no more rows.</param>
-       * <param name="quoteBuffer">Thread-local buffer for quote parsing. If null, one will be created on demand.</param>
+       * <param name="quoteBuffer">Optional buffer for more efficient quote parsing, must not be shared across thread.</param>
        * <returns>True on success, false on no more rows.</returns>
        * <see cref="StreamReader.ReadLine"/> */
       public static bool TryReadCsvRow ( this TextReader source, out IEnumerable<string> row, StringBuilder quoteBuffer = null )
@@ -156,7 +236,7 @@ namespace ZyMod {
 
       /** <summary>Read a csv row from a Reader.  May consume multiple lines.  Linebreaks in cells will become \n</summary>
        * <param name="source">Reader to get line data from.</param>
-       * <param name="quoteBuffer">Thread-local buffer for quote parsing. If null, one will be created on demand.</param>
+       * <param name="quoteBuffer">Optional buffer for more efficient quote parsing, must not be shared across thread.</param>
        * <returns>Cell data enumeration (forward-only), or null if no more rows.</returns>
        * <see cref="StreamReader.ReadLine"/> */
       public static IEnumerable<string> ReadCsvRow ( this TextReader source, StringBuilder quoteBuffer = null ) {
@@ -178,7 +258,7 @@ namespace ZyMod {
             pos = end + 1; // Normal Cell.
             return line.Substring( head, end - head );
          }
-         if ( buf == null ) buf = new StringBuilder(); else buf.Clear();
+         if ( buf == null ) buf = new StringBuilder(); else buf.Length = 0;
          var start = ++pos; // Drop opening quote.
          while ( true ) {
             int end = pos < len ? line.IndexOf( '"', pos ) : -1, next = end + 1;
@@ -200,20 +280,21 @@ namespace ZyMod {
       #endif
 
       /* Dump unity components to log. *
-      public static void DumpComponents ( UnityEngine.GameObject e ) => DumpComponents( Info, "", new HashSet<object>(), e );
+      public static void DumpComponents ( UnityEngine.GameObject e ) => DumpComponents( ( msg, arg ) => ModComponent.Info( msg, arg ), e );
       public static void DumpComponents ( Action< object, object[] > output, UnityEngine.GameObject e ) => DumpComponents( output, "", new HashSet<object>(), e );
       internal static void DumpComponents ( Action< object, object[] > output, string prefix, HashSet<object> logged, UnityEngine.GameObject e ) {
-         if ( prefix.Length > 10 ) return;
+         if ( prefix.Length > 12 ) return;
          if ( e == null || logged.Contains( e ) ) return;
          logged.Add( e );
          Dump( output, "{0}- '{1}'{2} {3}{4}{5}{6} :{7}", prefix, e.name, ToTag( e.tag ), FindText( e ), TypeName( e ),
             e.activeSelf ? "" : " (Inactive)", e.layer == 0 ? "" : $" Layer {e.layer}", ToString( e.GetComponent<UnityEngine.Transform>() ) );
-         if ( prefix.Length == 0 )
+         if ( prefix.Length <= 6 )
             foreach ( var c in e.GetComponents<UnityEngine.Component>() ) try {
                var typeName = TypeName( c );
                if ( c is UnityEngine.Transform cRect ) ;
-               else if ( c is UnityEngine.UI.Text txt ) Dump( output, "{0}...{1} {2} {3}", prefix, typeName, txt.color, txt.text );
-               else if ( c is I2.Loc.Localize loc ) Dump( output, "{0}...{1} {2}", prefix, typeName, loc.mTerm );
+               else if ( c is UnityEngine.UI.Text txt ) Dump( output, "{0}...{1} {2} {3} {4}", prefix, typeName, txt.font, txt.fontSize, txt.text );
+               else if ( c is UnityEngine.UI.Image img ) Dump( output, "{0}...{1} {2} {3}", prefix, typeName, img.sprite?.name ?? img.mainTexture?.name, img.type );
+               //else if ( c is I2.Loc.Localize loc ) Dump( output, "{0}...{1} {2}", prefix, typeName, loc.mTerm );
                else if ( c is UnityEngine.UI.LayoutGroup layout ) Dump( output, "{0}...{1} Padding {2}", prefix, typeName, layout.padding );
                else Dump( output, "{0}...{1}", prefix, typeName );
             } catch ( Exception ) { }
@@ -229,6 +310,32 @@ namespace ZyMod {
          var result = string.Format( "Pos {0} Scale {1} Rotate {2}", t.localPosition, t.localScale, t.localRotation );
          return " " + result.Replace( ".0,", "," ).Replace( ".0)", ")" ).Replace( "Pos (0, 0, 0)", "" ).Replace( "Scale (1, 1, 1)", "" ).Replace( "Rotate (0, 0, 0, 1)", "" ).Trim();
       }
+      /**/ /* Dump object type and fields to log *
+      public static void DumpObject ( Object e ) => ModComponent.Info( new StringBuilder().AddObj( e, new List< object >(), 3 ) );
+      private static StringBuilder AddObj ( this StringBuilder str, Object e, List< object > refs, int depth ) {
+         if ( e == null ) return str.Append( "null" );
+         var t = e.GetType(); if ( t.IsPrimitive || t.IsEnum ) return str.Append( e );
+         if ( e is string || e is StringBuilder ) return str.Append( '"' ).Append( e.ToString().Replace( "\"", "\"\"" ) ).Append( '"' );
+         var i = refs.IndexOf( e ); if ( i >= 0 ) return str.Append( '#' ).Append( i.ToString( "X" ) );
+         str.Append( "{#" ).Append( refs.Count.ToString( "X" ) ); refs.Add( e );
+         while ( t != null ) try { var len = str.Length;
+            str.Append( "[" ).Append( t.Name ).Append( "]" );
+            if ( depth == 0 ) return str.Append( "...}" );
+            if ( t.IsArray ) {
+               if ( e is object[] ary ) { foreach ( var o in ary ) str.AddObj( o, refs, depth - 1 ).Append( ',' ); break; }
+               if ( e is bool [] oa ) { str.AddAry( oa ); break; } if ( e is byte[] ba ) { str.AddAry( ba ); break; } if ( e is char[] ca ) { str.AddAry( ca ); break; }
+               if ( e is short[] sa ) { str.AddAry( sa ); break; } if ( e is int [] ia ) { str.AddAry( ia ); break; } if ( e is long[] la ) { str.AddAry( la ); break; }
+               if ( e is float[] fa ) { str.AddAry( fa ); break; } if ( e is double[] da ) { str.AddAry( da ); break; } if ( e is decimal[] ea ) { str.AddAry( ea ); break; }
+            }
+            foreach ( var f in t.GetFields( Public | NonPublic | Static | Instance | DeclaredOnly ) )
+               if ( ! f.IsStatic || refs.First( f.DeclaringType.IsInstanceOfType ) == e )
+                  str.Append( f.Name ).Append( ':' ).AddObj( f.GetValue( e ), refs, depth - 1 ).Append( ',' );
+            if ( str[ str.Length - 1 ] != ',' && t != e.GetType() ) str.Length = len; // Remove empty super class.
+         } catch ( Exception x ) { str.Append( $"({x})" ); } finally { t = t.BaseType; }
+         if ( str[ str.Length - 1 ] == ',' ) str.Length--;
+         return str.Append( '}' ); // Well, if you can read the output, this wall of code should be a piece of cake.
+      }
+      private static StringBuilder AddAry<T> ( this StringBuilder b, T[] a ) { foreach ( var e in a ) b.Append( e ).Append( ',' ); return b; }
       /**/
 
       #if DotNet35
@@ -243,9 +350,13 @@ namespace ZyMod {
    }
 
    #if ! NoConfig
-   public abstract class BaseConfig { // Abstract code to load and save simple config object to text-based file.  By default only process public instant fields, may be filtered by attributes.
+   public abstract class BaseConfig  : ModComponent { // Abstract code to load and save simple config object to text-based file.  By default only process public instant fields, may be filtered by attributes.
       protected virtual string GetFileExtension () => ".conf";
-      public virtual string GetDefaultPath () => Path.Combine( RootMod.AppDataDir, RootMod.ModName + GetFileExtension() );
+      public virtual string GetDefaultPath () { lock( sync ) return Path.Combine( AppDataDir, ModName + GetFileExtension() ); }
+      protected virtual bool OnLoading ( string from ) => true;
+      protected virtual void OnLoad ( string from ) { }
+      protected virtual bool OnSaving ( string to ) => true;
+      protected virtual void OnSave ( string to ) { }
 
       public void Load () => Load( this );
       public void Load ( string path ) => Load( this, path );
@@ -253,23 +364,26 @@ namespace ZyMod {
       public void Load < T > ( out T subject ) where T : new() => Load( subject = new T() );
       public void Load < T > ( out T subject, string path ) where T : new() => Load( subject = new T(), path );
       public virtual void Load ( object subject, string path ) { try {
+         var conf = subject as BaseConfig;
+         if ( conf?.OnLoading( path ) == false ) return;
          if ( ! File.Exists( path ) ) {
             Save( subject, path );
          } else {
-            _Log( Info, "Loading {0} into {1}", path, new object[]{ subject.GetType().FullName } );
+            Info( "Loading {0} into {1}", path, subject.GetType().FullName );
             _ReadFile( subject, path );
          }
-         foreach ( var prop in GetType().GetFields() ) _Log( Info, "Config {0} = {1}", prop.Name, prop.GetValue( this ) );
-      } catch ( Exception ex ) {  _Log( Warning, ex ); } }
+         conf?.OnLoad( path );
+         foreach ( var prop in GetType().GetFields() ) Info( "Config {0} = {1}", prop.Name, prop.GetValue( this ) );
+      } catch ( Exception ex ) { Warn( ex ); } }
 
       protected abstract void _ReadFile ( object subject, string path );
       protected virtual bool _ReadField ( object subject, string name, out FieldInfo field ) {
          field = subject.GetType().GetField( name );
-         if ( field == null ) _Log( Warning, "Unknown field: {0}", name ); // Legacy fields are expected to be kept in config class as [Obsolete].
+         if ( field == null ) Warn( "Unknown field: {0}", name ); // Legacy fields are expected to be kept in config class as [Obsolete].
          return field != null && ! field.IsStatic && ! field.IsInitOnly && ! field.IsNotSerialized;
       }
       protected virtual void _SetField ( object subject, FieldInfo f, string val ) {
-         if ( ModHelpers.TryParse( f.FieldType, val, out object parsed ) ) f.SetValue( subject, parsed );
+         if ( ModHelpers.TryParse( f.FieldType, val, out object parsed, Logger ) ) f.SetValue( subject, parsed );
       }
 
       public void Save () => Save( this );
@@ -277,30 +391,32 @@ namespace ZyMod {
       public void Save ( object subject ) => Save( subject, GetDefaultPath() );
       public virtual void Save ( object subject, string path ) { try {
          if ( subject == null ) { File.Delete( path ); return; }
+         var conf = subject as BaseConfig;
+         if ( conf?.OnSaving( path ) == false ) return;
          var type = subject.GetType();
-         _Log( Info, "Creating {0} from {1}", path, type.FullName );
+         Info( "Writing {0} from {1}", path, type.FullName );
          using ( TextWriter tw = File.CreateText( path ) ) {
-            var attr = type.GetCustomAttribute<ConfigAttribute>();
-            var comment = ! ModHelpers.IsBlank( attr?.Comment ) ? attr.Comment : null;
-            _WriteData( tw, subject, type, subject, comment );
-            foreach ( var f in _ListFields( subject ) ) {
-               comment = ( attr = f.GetCustomAttribute<ConfigAttribute>() ) != null && ! string.IsNullOrEmpty( attr.Comment ) ? attr.Comment : null;
-               _WriteData( tw, subject, f, f.GetValue( subject ), comment );
-            }
-            _WriteData( tw, subject, type, subject, "" );
+            _WriteData( tw, subject, type, subject, _GetComments( type ) );
+            foreach ( var f in _ListFields( subject ) )
+               _WriteData( tw, subject, f, f.GetValue( subject ), _GetComments( f ) );
+            _WriteData( tw, subject, type, subject, null );
          }
-         _Log( Verbose, "{0} bytes written", (Func<string>) ( () => new FileInfo( path ).Length.ToString() ) );
-      } catch ( Exception ex ) { _Log( Warning, "Cannot create config file: {0}", ex ); } }
+         Fine( "{0} bytes written", (Func<string>) ( () => new FileInfo( path ).Length.ToString() ) );
+         conf?.OnSave( path );
+      } catch ( Exception ex ) { Warn( "Cannot create config file" ); Warn( ex ); } }
 
-      protected virtual IEnumerable<FieldInfo> _ListFields ( object subject ) {
+      protected virtual IEnumerable< string > _GetComments ( MemberInfo mem )
+         => mem.GetCustomAttributes( true ).OfType< ConfigAttribute >().Where( e => ! ModHelpers.IsBlank( e?.Comment ) ).Select( e => e.Comment );
+
+      protected virtual IEnumerable< FieldInfo > _ListFields ( object subject ) {
          var fields = subject.GetType().GetFields()
             .Where( e => ! e.IsStatic && ! e.IsInitOnly && ! e.IsNotSerialized && e.GetCustomAttribute<ObsoleteAttribute>() == null );
-         if ( fields.Any( e => e.GetCustomAttribute<ConfigAttribute>() != null ) ) // If any field has ConfigAttribute, save only these fields.
-            fields = fields.Where( e => e.GetCustomAttribute<ConfigAttribute>() != null ).ToArray();
+         bool HasConfig ( FieldInfo f ) => f.GetCustomAttributes( typeof( ConfigAttribute ), false ).Length > 0;
+         if ( fields.Any( HasConfig ) ) fields = fields.Where( HasConfig ).ToArray(); // If any field has ConfigAttribute, write only these fields.
          return fields;
       }
-      protected abstract void _WriteData ( TextWriter f, object subject, MemberInfo target, object value, string comment );
-      protected virtual void _Log ( TraceLevel level, object msg, params object[] arg ) => RootMod.Log?.Write( level, msg, arg );
+      /* Called before writing a type (target is Type && comment != ""), when writing a field, and after writing a type (target is Type && comment = null) */
+      protected abstract void _WriteData ( TextWriter f, object subject, MemberInfo target, object value, IEnumerable< string > comment );
    }
 
    #if ! NoCsv
@@ -316,8 +432,9 @@ namespace ZyMod {
             _SetField( subject, field, cells[1] ?? "" );
          }
       }
-      protected override void _WriteData ( TextWriter f, object subject, MemberInfo target, object value, string comment ) {
-         if ( target is Type ) { if ( comment != "" ) f.WriteCsvLine( "Config", "Value", comment ?? "Comment" ); }
+      protected override void _WriteData ( TextWriter f, object subject, MemberInfo target, object value, IEnumerable< string > comments ) {
+         var comment = comments?.Any() == true ? string.Join( " ", comments.ToArray() ) : null;
+         if ( target is Type ) f.WriteCsvLine( "Config", "Value", comment ?? "Comment" );
          else f.WriteCsvLine( target.Name, value, comment ?? "" );
       }
    }
@@ -334,18 +451,21 @@ namespace ZyMod {
             _SetField( subject, field, val );
          }
       }
-      protected override void _WriteData ( TextWriter f, object subject, MemberInfo target, object value, string comment ) {
-         if ( ! string.IsNullOrEmpty( comment ) ) f.Write( comment.Substring( 0, 1 ).IndexOfAny( new char[]{ '[', ';', '\r', '\n' } ) != 0 ? $"; {comment}\r\n" : $"{comment}\r\n" );
+      protected override void _WriteData ( TextWriter f, object subject, MemberInfo target, object value, IEnumerable< string > comments ) {
+         if ( comments != null )
+            foreach ( var comment in comments )
+               f.Write( comment.Substring( 0, 1 ).IndexOfAny( new char[]{ '[', ';', '\r', '\n' } ) != 0 ? $"; {comment}\r\n" : $"{comment}\r\n" );
          if ( target is Type ) return;
          if ( value != null ) {
-            value = comment = value.ToString();
-            if ( comment.Trim() != comment ) value = "\"" + comment + "\"";
+            var txt = value.ToString();
+            if ( txt.Trim() != txt ) txt = "\"" + txt + "\"";
+            value = txt;
          }
          f.Write( $"{target.Name} = {value}\r\n" );
       }
    }
 
-   [ AttributeUsage( AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property ) ]
+   [ AttributeUsage( AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true ) ]
    public class ConfigAttribute : Attribute { // Slap this on config attributes for auto-doc.
       public ConfigAttribute () {}
       public ConfigAttribute ( string comment ) { Comment = comment; }
@@ -353,14 +473,15 @@ namespace ZyMod {
    }
    #endif
 
-   public class Patcher { // Patch classes may inherit from this class for manual patching.  You can still use Harmony.PatchAll, of course.
-      protected static readonly object sync = new object();
+   #if ! NoPatch
+   public class Patcher : ModComponent { // Patch classes may inherit from this class for manual patching.  You can still use Harmony.PatchAll, of course.
       public Harmony harmony { get; private set; }
 
       public class ModPatch {
          public readonly Harmony harmony;
-         public ModPatch ( Harmony patcher ) { harmony = patcher; }
-         public MethodBase original; public HarmonyMethod prefix, postfix, transpiler;
+         public readonly MethodBase original;
+         public ModPatch ( Harmony patcher, MethodBase orig ) { harmony = patcher; original = orig; }
+         public HarmonyMethod prefix, postfix, transpiler;
          public void Unpatch ( HarmonyPatchType type = All ) { lock ( sync ) {
             if ( prefix     != null && ( type == All || type == Prefix     ) ) { harmony.Unpatch( original, prefix.method     ); prefix     = null; }
             if ( postfix    != null && ( type == All || type == Postfix    ) ) { harmony.Unpatch( original, postfix.method    ); postfix    = null; }
@@ -368,47 +489,61 @@ namespace ZyMod {
          } }
       };
 
-      protected ModPatch Patch ( Type type, string method, string prefix = null, string postfix = null, string transpiler = null ) =>
-         Patch( type.Method( method ), prefix, postfix, transpiler );
-      protected ModPatch Patch ( MethodBase method, string prefix = null, string postfix = null, string transpiler = null ) {
-         lock ( sync ) if ( harmony == null ) harmony = new Harmony( RootMod.ModName );
-         ModHelpers.Fine( "Patching {0} {1} | Pre: {2} | Post: {3} | Trans: {4}", method.DeclaringType, method, prefix, postfix, transpiler );
-         var patch = new ModPatch( harmony ) { original = method, prefix = ToHarmony( prefix ), postfix = ToHarmony( postfix ), transpiler = ToHarmony( transpiler ) };
-         lock ( sync ) harmony.Patch( method, patch.prefix, patch.postfix, patch.transpiler );
+      protected virtual string GetHarmonyId () => ModName ?? Assembly.GetExecutingAssembly().CodeBase;
+
+      private ModPatch DoPatch ( MethodBase method, string prefix = null, string postfix = null, string transpiler = null ) {
+         lock ( sync ) if ( harmony == null ) harmony = new Harmony( GetHarmonyId() );
+         Fine( "Patching {0} {1} | Pre: {2} | Post: {3} | Trans: {4}", method.DeclaringType, method, prefix, postfix, transpiler );
+         var patch = new ModPatch( harmony, method ) { prefix = ToHarmony( prefix ), postfix = ToHarmony( postfix ), transpiler = ToHarmony( transpiler ) };
+         harmony.Patch( method, patch.prefix, patch.postfix, patch.transpiler );
          return patch;
       }
 
-      protected ModPatch TryPatch ( Type type, string method, string prefix = null, string postfix = null, string transpiler = null ) =>
-         TryPatch( type.Method( method ), prefix, postfix, transpiler );
-      protected ModPatch TryPatch ( MethodBase method, string prefix = null, string postfix = null, string transpiler = null ) { try {
-         return Patch( method, prefix, postfix, transpiler );
-      } catch ( Exception ex ) {
-         ModHelpers.Warn( "Could not patch {0} {1} | Pre: {2} | Post: {3} | Trans: {4}\n{5}", method?.DeclaringType, method?.Name, prefix, postfix, transpiler, ex );
+      protected ModPatch Patch ( Type type, string method, string prefix = null, string postfix = null, string transpiler = null ) { try {
+         return DoPatch( type.Method( method ), prefix, postfix, transpiler );
+      } catch ( Exception x ) {
+         Warn( "Could not patch {0} {1} | Pre: {2} | Post: {3} | Trans: {4}\n{5}", type, method, prefix, postfix, transpiler, x );
+         return null;
+      } }
+      protected ModPatch Patch ( MethodBase method, string prefix = null, string postfix = null, string transpiler = null ) { try {
+         return DoPatch( method, prefix, postfix, transpiler );
+      } catch ( Exception x ) {
+         Warn( "Could not patch {0} {1} | Pre: {2} | Post: {3} | Trans: {4}\n{5}", method?.DeclaringType, method?.Name, prefix, postfix, transpiler, x );
          return null;
       } }
 
-      protected void UnpatchAll () {
+      internal virtual void UnpatchAll () {
+         lock ( sync ) if ( harmony == null ) return;
          var m = typeof( Harmony ).Method( "UnpatchAll", typeof( string ) ) ?? typeof( Harmony ).Method( "UnpatchId", typeof( string ) );
-         lock ( sync ) {
-            if ( harmony == null ) return;
-            m?.Invoke( harmony, new object[]{ harmony.Id } );
-         }
+         if ( m == null ) return;
+         Info( "Unpatching all." );
+         m.Run( harmony, harmony.Id );
       }
-      protected MethodInfo UnpatchAll ( MethodInfo orig ) { if ( orig != null ) lock ( sync ) harmony?.Unpatch( orig, All, harmony.Id ); return null; }
+      internal MethodInfo UnpatchAll ( MethodInfo orig ) {
+         if ( orig == null ) return null;
+         lock ( sync ) if ( harmony == null ) return orig;
+         Info( "Unpatching {0}", orig );
+         harmony.Unpatch( orig, All, harmony.Id );
+         return null;
+      }
 
       protected HarmonyMethod ToHarmony ( string name ) {
          if ( ModHelpers.IsBlank( name ) ) return null;
-         return new HarmonyMethod( GetType().GetMethod( name, Public | NonPublic | Static ) ?? throw new NullReferenceException( name + " not found" ) );
+         return new HarmonyMethod( GetType().GetMethod( name, Public | NonPublic | Static ) ?? throw new NullReferenceException( $"static method {name} not found" ) );
       }
    }
+   #endif
 
+   #if ! NoLog
    // Thread safe logger.  Buffer and write in background thread unless interval is set to 0.
    // Common usages: Log an Exception (will ignore duplicates), Log a formatted string with params, Log multiple objects (in one call and on one line).
    public class ZyLogger {
       private TraceLevel _LogLevel = TraceLevel.Info;
       public TraceLevel LogLevel {
          get { lock ( buffer ) return _LogLevel; } // ReaderWriterLockSlim is tempting, but expected use case is 1 thread logging + 1 thread flushing.
-         set { lock ( buffer ) { _LogLevel = value;
+         set { lock ( buffer ) {
+                  if ( _LogLevel == value ) return;
+                  _LogLevel = value;
                   if ( value == Off ) { flushTimer?.Stop(); buffer.Clear(); }
                   else flushTimer?.Start(); }  } }
       private string _TimeFormat = "HH:mm:ss.fff ";
@@ -428,7 +563,7 @@ namespace ZyMod {
             AppDomain.CurrentDomain.ProcessExit += Terminate;
          }
          if ( _LogLevel == Off ) { buffer.Clear(); return; }
-         buffer.Insert( 0, $"{DateTime.Now:u} {RootMod.ModName} initiated, log level {_LogLevel}, " + ( FlushInterval > 0 ? $"refresh every {FlushInterval}s." : "no buffer." ) );
+         buffer.Insert( 0, $"{DateTime.Now:u} {ModComponent.ModName} initiated, log level {_LogLevel}, " + ( FlushInterval > 0 ? $"refresh every {FlushInterval}s." : "no buffer." ) );
          Flush();
          flushTimer?.Start();
       } catch ( Exception ) { } }
@@ -438,24 +573,23 @@ namespace ZyMod {
          buffer.Add( $"Logging controlled by {conf}.  First line is log level (Off/Error/Warn/Info/Verbose).  Second line is write interval in seconds, 0 to 60, default 2." );
          if ( ! File.Exists( conf ) ) return;
          using ( var r = new StreamReader( conf ) ) {
-            var line = r.ReadLine();
-            if ( line == null ) return;
-            switch ( ( line.ToUpperInvariant() + "?" )[0] ) {
-               case 'O' : LogLevel = TraceLevel.Off; break;
-               case 'E' : LogLevel = TraceLevel.Error; break;
-               case 'W' : LogLevel = TraceLevel.Warning; break;
-               case 'I' : LogLevel = TraceLevel.Info; break;
-               case 'V' : case 'F' : LogLevel = TraceLevel.Verbose; break;
-            }
-            uint i = 0;
-            if ( uint.TryParse( r.ReadLine(), out i ) ) flushInterval = i;
+            if ( TryParseLogLevel( r.ReadLine(), out var level ) ) LogLevel = level;
+            if ( uint.TryParse( r.ReadLine(), out var i ) ) flushInterval = i;
          }
       }
 
-      public void Error ( object msg, params object[] arg ) => Write( TraceLevel.Error, msg, arg );
-      public void Warn  ( object msg, params object[] arg ) => Write( TraceLevel.Warning, msg, arg );
-      public void Info  ( object msg, params object[] arg ) => Write( TraceLevel.Info, msg, arg );
-      public void Fine  ( object msg, params object[] arg ) => Write( TraceLevel.Verbose, msg, arg );
+      public static bool TryParseLogLevel ( string line, out TraceLevel level ) {
+         level = TraceLevel.Off;
+         if ( ! string.IsNullOrEmpty( line ) )
+            switch ( line.ToUpperInvariant()[0] ) {
+               case 'O' : return true;
+               case 'E' : level = TraceLevel.Error; return true;
+               case 'W' : level = TraceLevel.Warning; return true;
+               case 'I' : level = TraceLevel.Info; return true;
+               case 'V' : case 'F' : level = TraceLevel.Verbose; return true;
+            }
+         return false;
+      }
 
       public void Flush () { try {
          string[] buf;
@@ -465,7 +599,7 @@ namespace ZyMod {
 
       private void Terminate ( object _, EventArgs __ ) { Flush(); LogLevel = Off; AppDomain.CurrentDomain.ProcessExit -= Terminate; }
 
-      private readonly HashSet< string > knownErrors = new HashSet<string>(); // Known exceptions are ignored.  Modding is risky.
+      private readonly HashSet< int > knownErrors = new HashSet< int >(); // Known exceptions are ignored.  Modding is risky.
 
       public void Write ( TraceLevel level, object msg, params object[] arg ) {
          string line;
@@ -474,13 +608,16 @@ namespace ZyMod {
             if ( ( line = Format( level, line, msg, arg ) ) == null ) return;
          } catch ( Exception e ) { // ToString error, time format error, stacktrace error...
             if ( msg is Exception ex ) line = ex.GetType() + ": " + ex.Message;
-            else { Warn( e ); if ( msg is string txt ) line = txt; else return; }
+            else { Write( TraceLevel.Warning, e ); if ( msg is string txt ) line = txt; else return; }
          }
          lock ( buffer ) buffer.Add( line );
          if ( level == TraceLevel.Error || FlushInterval == 0 ) Flush();
       }
 
-      protected virtual string Format ( TraceLevel level, string timeFormat, object msg, object[] arg ) {
+      protected virtual string Format ( TraceLevel level, string timeFormat, object msg, object[] arg )
+         => DefaultFormatter( level, knownErrors, timeFormat, msg, arg );
+
+      public static string DefaultFormatter ( TraceLevel level, ICollection< int > knownErrors, string timeFormat, object msg, params object[] arg ) {
          string tag = "INFO ";
          switch ( level ) {
             case TraceLevel.Off : return null;
@@ -488,17 +625,31 @@ namespace ZyMod {
             case TraceLevel.Warning : tag = "WARN " ; break;
             case TraceLevel.Verbose : tag = "FINE " ; break;
          }
+         if ( ! string.IsNullOrEmpty( timeFormat ) ) tag = DateTime.Now.ToString( timeFormat ) + tag;
+         msg = DefaultFormatter( knownErrors, msg, arg );
+         return msg == null ? null : tag + msg;
+      }
+
+      public static string DefaultFormatter ( ICollection< int > knownErrors, object msg, params object[] arg ) {
          if ( arg != null ) for ( var i = arg.Length - 1 ; i >= 0 ; i-- ) if ( arg[i] is Func<string> f ) arg[i] = f();
          if ( msg is string txt && txt.Contains( '{' ) && arg?.Length > 0 ) msg = string.Format( msg.ToString(), arg );
-         else if ( msg is Exception ) { var str = msg.ToString(); lock ( knownErrors ) { if ( knownErrors.Contains( str ) ) return null; knownErrors.Add( str ); } msg = str; }
+         else if ( msg is Exception ) {
+            var str = msg.ToString();
+            if ( knownErrors != null ) lock ( knownErrors ) {
+               var hash = knownErrors.GetHashCode();
+               if ( knownErrors.Contains( hash ) ) return null;
+               knownErrors.Add( hash );
+            }
+            msg = str;
+         }
          #if DotNet35
          else if ( arg?.Length > 0 ) msg = string.Join( ", ", new object[] { msg }.Union( arg ).Select( e => e?.ToString() ?? "null" ).ToArray() );
          #else
          else if ( arg?.Length > 0 ) msg = string.Join( ", ", new object[] { msg }.Union( arg ).Select( e => e?.ToString() ?? "null" ) );
          #endif
          else msg = msg?.ToString();
-         if ( ! string.IsNullOrEmpty( timeFormat ) ) tag = DateTime.Now.ToString( timeFormat ) + tag;
-         return tag + ( msg?.ToString() ?? "null" );
+         return msg?.ToString() ?? "null";
       }
    }
+   #endif
 }

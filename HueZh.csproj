@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Changelog.md" />
     <None Include="Readme.md" />
     <None Include="res\HueZh.csv" />
   </ItemGroup>
